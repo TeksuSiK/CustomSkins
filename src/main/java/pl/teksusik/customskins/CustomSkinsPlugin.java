@@ -7,9 +7,11 @@ import pl.teksusik.customskins.data.PluginConfiguration;
 import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.data.impl.MySQLStorage;
 import pl.teksusik.customskins.data.impl.SQLiteStorage;
+import pl.teksusik.customskins.model.StorageType;
 import pl.teksusik.customskins.service.SkinService;
 
 import java.io.File;
+import java.io.IOException;
 
 public class CustomSkinsPlugin extends JavaPlugin {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
@@ -39,13 +41,24 @@ public class CustomSkinsPlugin extends JavaPlugin {
     }
 
     private void loadDatabase() {
+        final File sqliteFile = new File(getDataFolder(), this.pluginConfiguration.getSqliteFile());
+        if (this.pluginConfiguration.getStorageType().equals(StorageType.SQLITE)) {
+            if (!sqliteFile.exists()) {
+                try {
+                    sqliteFile.createNewFile();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+
         this.storage = switch (this.pluginConfiguration.getStorageType()) {
             case MYSQL -> new MySQLStorage(this.pluginConfiguration.getMysqlHost(),
                     this.pluginConfiguration.getMysqlPort(),
                     this.pluginConfiguration.getMysqlDatabase(),
                     this.pluginConfiguration.getMysqlUsername(),
                     this.pluginConfiguration.getMysqlPassword());
-            case SQLITE -> new SQLiteStorage(this.pluginConfiguration.getSqliteFile());
+            case SQLITE -> new SQLiteStorage(sqliteFile);
         };
     }
 }
