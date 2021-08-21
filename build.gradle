@@ -33,4 +33,5 @@ dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation 'eu.okaeri:okaeri-configs-yaml-bukkit:3.2.0'
+    implementation 'com.zaxxer:HikariCP:5.0.0'
 }

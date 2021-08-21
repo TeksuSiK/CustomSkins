@@ -18,5 +18,33 @@ public class PluginConfiguration extends OkaeriConfig {
     private String mysqlUsername = "customskins";
     private String mysqlPassword = "customskins";
     @Comment("SQLite file name")
-    private String sqliteFile = "";
+    private String sqliteFile = "customskins.db";
+
+    public StorageType getStorageType() {
+        return storageType;
+    }
+
+    public String getMysqlHost() {
+        return mysqlHost;
+    }
+
+    public int getMysqlPort() {
+        return mysqlPort;
+    }
+
+    public String getMysqlDatabase() {
+        return mysqlDatabase;
+    }
+
+    public String getMysqlUsername() {
+        return mysqlUsername;
+    }
+
+    public String getMysqlPassword() {
+        return mysqlPassword;
+    }
+
+    public String getSqliteFile() {
+        return sqliteFile;
+    }
 }
