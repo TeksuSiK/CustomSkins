@@ -8,6 +8,8 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import pl.teksusik.customskins.CustomSkinsPlugin;
 import pl.teksusik.customskins.data.Storage;
+import pl.teksusik.customskins.libs.mineskin.MineskinClient;
+import pl.teksusik.customskins.libs.mineskin.SkinOptions;
 import pl.teksusik.customskins.model.CustomSkin;
 import pl.teksusik.customskins.util.ReflectionHelper;
 
@@ -28,10 +30,12 @@ public class SkinService {
     private final Set<CustomSkin> customSkins = new HashSet<>();
     private final CustomSkinsPlugin plugin;
     private final Storage storage;
+    private final MineskinClient mineskinClient;
 
-    public SkinService(CustomSkinsPlugin plugin, Storage storage) {
+    public SkinService(CustomSkinsPlugin plugin, Storage storage, MineskinClient mineskinClient) {
         this.plugin = plugin;
         this.storage = storage;
+        this.mineskinClient = mineskinClient;
     }
 
     private static final String CREATE_QUERY = """
@@ -183,5 +187,12 @@ public class SkinService {
                     players.hidePlayer(this.plugin, player);
                     players.showPlayer(this.plugin, player);
                 }));
+    }
+
+    public void uploadSkin(Player player, String url, SkinOptions skinOptions) {
+        mineskinClient.generateUrl(url, skinOptions).thenAcceptAsync(skin -> {
+            CustomSkin generatedSkin = new CustomSkin(player.getUniqueId(), skin.name, skin.data.texture.value, skin.data.texture.signature);
+            createSkin(generatedSkin);
+        });
     }
 }

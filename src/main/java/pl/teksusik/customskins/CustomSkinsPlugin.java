@@ -9,12 +9,15 @@ import pl.teksusik.customskins.data.PluginConfiguration;
 import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.data.impl.MySQLStorage;
 import pl.teksusik.customskins.data.impl.SQLiteStorage;
+import pl.teksusik.customskins.libs.mineskin.MineskinClient;
 import pl.teksusik.customskins.listener.PlayerJoinListener;
 import pl.teksusik.customskins.model.StorageType;
 import pl.teksusik.customskins.service.SkinService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class CustomSkinsPlugin extends JavaPlugin {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
@@ -23,14 +26,15 @@ public class CustomSkinsPlugin extends JavaPlugin {
     private Storage storage;
     private SkinService skinService;
 
-    private final PaperCommandManager paperCommandManager = new PaperCommandManager(this);
+    private PaperCommandManager paperCommandManager;
 
     @Override
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
-        this.skinService = new SkinService(this, storage);
+        this.skinService = new SkinService(this, storage, new MineskinClient(Executors.newFixedThreadPool(2), "customskins"));
         this.skinService.prepareSQL();
+        this.paperCommandManager = new PaperCommandManager(this);
         this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }

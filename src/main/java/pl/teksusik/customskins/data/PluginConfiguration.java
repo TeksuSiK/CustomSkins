@@ -43,6 +43,10 @@ public class PluginConfiguration extends OkaeriConfig {
     private String skinChangedMessage = "<green>You successfully changed your skin";
     @Comment("Skin deleted message")
     private String skinDeletedMessage = "<green>You successfully deleted your skin";
+    @Comment("Invalid model message")
+    private String invalidModelMessage = "<dark_red>Error: <red>Model you provided does not exists. Valid models: DEFAULT, SLIM";
+    @Comment("Skin already exists")
+    private String skinAlreadyExists = "<dark_red>Error: <red>Skin with provided name already exists";
 
     public StorageType getStorageType() {
         return storageType;
@@ -90,5 +94,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public String getSkinDeletedMessage() {
         return skinDeletedMessage;
+    }
+
+    public String getInvalidModelMessage() {
+        return invalidModelMessage;
+    }
+
+    public String getSkinAlreadyExists() {
+        return skinAlreadyExists;
     }
 }

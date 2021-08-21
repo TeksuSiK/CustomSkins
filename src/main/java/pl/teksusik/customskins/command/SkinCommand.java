@@ -7,6 +7,9 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import org.bukkit.entity.Player;
 import pl.teksusik.customskins.data.PluginConfiguration;
+import pl.teksusik.customskins.libs.mineskin.SkinOptions;
+import pl.teksusik.customskins.libs.mineskin.Variant;
+import pl.teksusik.customskins.libs.mineskin.Visibility;
 import pl.teksusik.customskins.model.CustomSkin;
 import pl.teksusik.customskins.service.SkinService;
 import pl.teksusik.customskins.util.ChatHelper;
@@ -47,7 +50,23 @@ public class SkinCommand extends BaseCommand {
     @Subcommand("add")
     @Syntax("<name> <url> <model>")
     public void onAdd(Player player, String[] args) {
-        //TODO
+        if (args.length != 3) {
+            onDefault(player);
+            return;
+        }
+        String name = args[1];
+        if (skinService.getSkin(player, name).isPresent()) {
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinAlreadyExists());
+            return;
+        }
+        Variant variant;
+        try {
+            variant = Variant.valueOf(args[2].toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getInvalidModelMessage());
+            return;
+        }
+        skinService.uploadSkin(player, args[0], SkinOptions.create(name, variant, Visibility.PRIVATE));
     }
 
     @Subcommand("delete")
