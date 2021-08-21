@@ -39,6 +39,10 @@ public class PluginConfiguration extends OkaeriConfig {
     private String skinsAvailableMessage = "<green>Skins available:";
     @Comment("Skin not exists message")
     private String skinNotExistsMessage = "<dark_red>Error: <red>Skin with provided name does not exists";
+    @Comment("Skin changed message")
+    private String skinChangedMessage = "<green>You successfully changed your skin";
+    @Comment("Skin deleted message")
+    private String skinDeletedMessage = "<green>You successfully deleted your skin";
 
     public StorageType getStorageType() {
         return storageType;
@@ -78,5 +82,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public String getSkinNotExistsMessage() {
         return skinNotExistsMessage;
+    }
+
+    public String getSkinChangedMessage() {
+        return skinChangedMessage;
+    }
+
+    public String getSkinDeletedMessage() {
+        return skinDeletedMessage;
     }
 }

@@ -38,7 +38,10 @@ public class SkinCommand extends BaseCommand {
     @Subcommand("wear")
     @Syntax("<name>")
     public void onWear(Player player, String[] args) {
-        //TODO
+        this.skinService.getSkin(player, args[0]).ifPresent(customSkin -> {
+            this.skinService.setSkin(player, customSkin);
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinChangedMessage());
+        });
     }
 
     @Subcommand("add")
@@ -47,11 +50,13 @@ public class SkinCommand extends BaseCommand {
         //TODO
     }
 
-    @Subcommand("remove")
+    @Subcommand("delete")
     @Syntax("<name>")
-    public void onRemove(Player player, String[] args) {
-        this.skinService.getSkin(player, args[0]).ifPresentOrElse(this.skinService::deleteSkin,
-                () -> ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinNotExistsMessage()));
+    public void onDelete(Player player, String[] args) {
+        this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
+            this.skinService.deleteSkin(customSkin);
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinDeletedMessage());
+        }, () -> ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinNotExistsMessage()));
     }
 
     @Subcommand("version")

@@ -1,9 +1,19 @@
 package pl.teksusik.customskins.service;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import pl.teksusik.customskins.CustomSkinsPlugin;
 import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.model.CustomSkin;
+import pl.teksusik.customskins.util.ReflectionHelper;
 
+import javax.management.ReflectionException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,9 +26,11 @@ import java.util.stream.Collectors;
 
 public class SkinService {
     private final Set<CustomSkin> customSkins = new HashSet<>();
+    private final CustomSkinsPlugin plugin;
     private final Storage storage;
 
-    public SkinService(Storage storage) {
+    public SkinService(CustomSkinsPlugin plugin, Storage storage) {
+        this.plugin = plugin;
         this.storage = storage;
     }
 
@@ -117,5 +129,59 @@ public class SkinService {
 
     private synchronized void removeSkin(CustomSkin customSkin) {
         this.customSkins.remove(customSkin);
+    }
+
+    private static final Method refreshPlayerMethod;
+    private static final Method getHandleMethod;
+    private static Method healthUpdateMethod;
+
+    static {
+        try {
+            refreshPlayerMethod = ReflectionHelper.getBukkitClass("entity.CraftPlayer").getDeclaredMethod("refreshPlayer");
+            refreshPlayerMethod.setAccessible(true);
+            getHandleMethod = ReflectionHelper.getBukkitClass("entity.CraftPlayer").getDeclaredMethod("getHandle");
+            getHandleMethod.setAccessible(true);
+
+            // XP won't get updated on unsupported Paper builds
+            try {
+                healthUpdateMethod = ReflectionHelper.getBukkitClass("entity.CraftPlayer").getDeclaredMethod("triggerHealthUpdate");
+                healthUpdateMethod.setAccessible(true);
+            } catch (NoSuchMethodException ignored) {
+            }
+
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    private void updateSkin(Player player) {
+        try {
+            refreshPlayerMethod.invoke(player);
+
+            if (healthUpdateMethod != null) {
+                healthUpdateMethod.invoke(player);
+            } else {
+                ReflectionHelper.invokeMethod(getHandleMethod.invoke(player), "triggerHealthUpdate");
+            }
+        } catch (IllegalAccessException | InvocationTargetException | ReflectionException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void setSkin(Player player, CustomSkin customSkin) {
+        GameProfile gameProfile = ((CraftPlayer) player).getProfile();
+        PropertyMap propertyMap = gameProfile.getProperties();
+        if (propertyMap != null)
+            propertyMap.clear();
+        propertyMap.put("textures", new Property("textures",
+                customSkin.getSkinTexture(),
+                customSkin.getSkinSignature()));
+        Bukkit.getScheduler().runTask(this.plugin, () -> Bukkit.getOnlinePlayers()
+                .stream()
+                .filter(players -> !player.equals(players))
+                .forEach(players -> {
+                    players.hidePlayer(this.plugin, player);
+                    players.showPlayer(this.plugin, player);
+                }));
     }
 }

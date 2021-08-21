@@ -29,7 +29,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
-        this.skinService = new SkinService(storage);
+        this.skinService = new SkinService(this, storage);
         this.skinService.prepareSQL();
         this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
