@@ -9,6 +9,7 @@ import pl.teksusik.customskins.data.PluginConfiguration;
 import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.data.impl.MySQLStorage;
 import pl.teksusik.customskins.data.impl.SQLiteStorage;
+import pl.teksusik.customskins.listener.PlayerJoinListener;
 import pl.teksusik.customskins.model.StorageType;
 import pl.teksusik.customskins.service.SkinService;
 
@@ -31,6 +32,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
         this.skinService = new SkinService(storage);
         this.skinService.prepareSQL();
         this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));
+        this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
 
     @Override
@@ -65,5 +67,9 @@ public class CustomSkinsPlugin extends JavaPlugin {
                     this.pluginConfiguration.getMysqlPassword());
             case SQLITE -> new SQLiteStorage(sqliteFile);
         };
+    }
+
+    public SkinService getSkinService() {
+        return skinService;
     }
 }

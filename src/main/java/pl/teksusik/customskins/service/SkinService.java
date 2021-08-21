@@ -41,7 +41,7 @@ public class SkinService {
         }
     }
 
-    public void loadSkinsByUUID(UUID uuid) {
+    public void loadSkins(UUID uuid) {
         try (final Connection connection = this.storage.getHikariDataSource().getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM customskins_skins WHERE skinOwner = ?")) {
             preparedStatement.setString(1, uuid.toString());
@@ -49,7 +49,7 @@ public class SkinService {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next())
                     return;
-                this.customSkins.add(new CustomSkin(uuid,
+                this.addSkin(new CustomSkin(uuid,
                         resultSet.getString("skinName"),
                         resultSet.getString("skinTexture"),
                         resultSet.getString("skinOwner")));
@@ -57,6 +57,10 @@ public class SkinService {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public void loadSkins(Player player) {
+        loadSkins(player.getUniqueId());
     }
 
     public Set<CustomSkin> getSkins(UUID uuid) {
