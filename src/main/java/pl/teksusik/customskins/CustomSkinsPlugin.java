@@ -7,6 +7,7 @@ import pl.teksusik.customskins.data.PluginConfiguration;
 import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.data.impl.MySQLStorage;
 import pl.teksusik.customskins.data.impl.SQLiteStorage;
+import pl.teksusik.customskins.service.SkinService;
 
 import java.io.File;
 
@@ -15,11 +16,14 @@ public class CustomSkinsPlugin extends JavaPlugin {
     private PluginConfiguration pluginConfiguration;
 
     private Storage storage;
+    private SkinService skinService;
 
     @Override
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
+        this.skinService = new SkinService(storage);
+        this.skinService.prepareSQL();
     }
 
     @Override
