@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SkinService {
     private final Set<CustomSkin> customSkins = new HashSet<>();
@@ -56,6 +57,16 @@ public class SkinService {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public Set<CustomSkin> getSkins(UUID uuid) {
+        return this.customSkins.stream()
+                .filter(customSkin -> customSkin.getSkinOwner().equals(uuid))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<CustomSkin> getSkins(Player player) {
+        return getSkins(player.getUniqueId());
     }
 
     public Optional<CustomSkin> getSkin(UUID skinOwner, String skinName) {

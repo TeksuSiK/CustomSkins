@@ -1,8 +1,10 @@
 package pl.teksusik.customskins;
 
+import co.aikar.commands.PaperCommandManager;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.teksusik.customskins.command.SkinCommand;
 import pl.teksusik.customskins.data.PluginConfiguration;
 import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.data.impl.MySQLStorage;
@@ -20,12 +22,15 @@ public class CustomSkinsPlugin extends JavaPlugin {
     private Storage storage;
     private SkinService skinService;
 
+    private final PaperCommandManager paperCommandManager = new PaperCommandManager(this);
+
     @Override
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
         this.skinService = new SkinService(storage);
         this.skinService.prepareSQL();
+        this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));
     }
 
     @Override
