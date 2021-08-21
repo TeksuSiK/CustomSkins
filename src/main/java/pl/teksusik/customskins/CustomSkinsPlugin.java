@@ -32,7 +32,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
-        this.skinService = new SkinService(this, storage, new MineskinClient(Executors.newFixedThreadPool(2), "customskins"));
+        this.skinService = new SkinService(this, storage, new MineskinClient("customskins"));
         this.skinService.prepareSQL();
         this.paperCommandManager = new PaperCommandManager(this);
         this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));

@@ -17,6 +17,10 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> this.plugin.getSkinService().loadSkins(player));
+        //TEMPORARY FIX - TODO
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            if (this.plugin.getSkinService().getSkins(player).size() == 0)
+                this.plugin.getSkinService().loadSkins(player);
+        });
     }
 }

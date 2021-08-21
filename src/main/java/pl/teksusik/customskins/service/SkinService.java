@@ -43,8 +43,7 @@ public class SkinService {
               `skinOwner` varchar(36) NOT NULL,
               `skinName` varchar(51) NOT NULL,
               `skinTexture` longtext NOT NULL,
-              `skinSignature` longtext NOT NULL,
-              PRIMARY KEY (`skinOwner`,`skinName`)
+              `skinSignature` longtext NOT NULL
             );
             """;
 
@@ -63,12 +62,11 @@ public class SkinService {
             preparedStatement.setString(1, uuid.toString());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (!resultSet.next())
-                    return;
-                this.addSkin(new CustomSkin(uuid,
-                        resultSet.getString("skinName"),
-                        resultSet.getString("skinTexture"),
-                        resultSet.getString("skinOwner")));
+                while (resultSet.next())
+                    this.addSkin(new CustomSkin(uuid,
+                            resultSet.getString("skinName"),
+                            resultSet.getString("skinTexture"),
+                            resultSet.getString("skinOwner")));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -187,11 +185,12 @@ public class SkinService {
                     players.hidePlayer(this.plugin, player);
                     players.showPlayer(this.plugin, player);
                 }));
+        updateSkin(player);
     }
 
-    public void uploadSkin(Player player, String url, SkinOptions skinOptions) {
+    public void uploadSkin(Player player, String name, String url, SkinOptions skinOptions) {
         mineskinClient.generateUrl(url, skinOptions).thenAcceptAsync(skin -> {
-            CustomSkin generatedSkin = new CustomSkin(player.getUniqueId(), skin.name, skin.data.texture.value, skin.data.texture.signature);
+            CustomSkin generatedSkin = new CustomSkin(player.getUniqueId(), name, skin.data.texture.value, skin.data.texture.signature);
             createSkin(generatedSkin);
         });
     }

@@ -41,24 +41,32 @@ public class SkinCommand extends BaseCommand {
     @Subcommand("wear")
     @Syntax("<name>")
     public void onWear(Player player, String[] args) {
-        this.skinService.getSkin(player, args[0]).ifPresent(customSkin -> {
+        if (args.length != 1) {
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getBadUsageMessage());
+            return;
+        }
+
+        this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
             this.skinService.setSkin(player, customSkin);
             ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinChangedMessage());
-        });
+        }, () -> ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinNotExistsMessage()));
     }
 
     @Subcommand("add")
     @Syntax("<name> <url> <model>")
     public void onAdd(Player player, String[] args) {
         if (args.length != 3) {
-            onDefault(player);
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getBadUsageMessage());
             return;
         }
-        String name = args[1];
+
+        String name = args[0];
+        System.out.println(name);
         if (skinService.getSkin(player, name).isPresent()) {
             ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinAlreadyExists());
             return;
         }
+
         Variant variant;
         try {
             variant = Variant.valueOf(args[2].toUpperCase());
@@ -66,12 +74,18 @@ public class SkinCommand extends BaseCommand {
             ChatHelper.sendMessage(player, this.pluginConfiguration.getInvalidModelMessage());
             return;
         }
-        skinService.uploadSkin(player, args[0], SkinOptions.create(name, variant, Visibility.PRIVATE));
+
+        skinService.uploadSkin(player, name, args[1], SkinOptions.create(name, variant, Visibility.PRIVATE));
     }
 
     @Subcommand("delete")
     @Syntax("<name>")
     public void onDelete(Player player, String[] args) {
+        if (args.length != 1) {
+            ChatHelper.sendMessage(player, this.pluginConfiguration.getBadUsageMessage());
+            return;
+        }
+
         this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
             this.skinService.deleteSkin(customSkin);
             ChatHelper.sendMessage(player, this.pluginConfiguration.getSkinDeletedMessage());
