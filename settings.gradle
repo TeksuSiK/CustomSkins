@@ -1,3 +1,4 @@
 rootProject.name = 'CustomSkins'
 include ':customskins-plugin'
+include ':customskins-nms'
 
