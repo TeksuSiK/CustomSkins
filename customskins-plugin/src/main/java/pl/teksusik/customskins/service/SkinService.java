@@ -68,7 +68,7 @@ public class SkinService {
                     this.addSkin(new CustomSkin(uuid,
                             resultSet.getString("skinName"),
                             resultSet.getString("skinTexture"),
-                            resultSet.getString("skinOwner")));
+                            resultSet.getString("skinSignature")));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
