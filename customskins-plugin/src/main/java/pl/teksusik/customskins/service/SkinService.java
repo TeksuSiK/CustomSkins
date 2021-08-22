@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import pl.teksusik.customskins.CustomSkinsPlugin;
 import pl.teksusik.customskins.data.Storage;
@@ -154,8 +153,8 @@ public class SkinService {
             } catch (NoSuchMethodException ignored) {
             }
 
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError(e);
+        } catch (Exception exception) {
+            throw new ExceptionInInitializerError(exception);
         }
     }
 

@@ -76,31 +76,16 @@ public class CustomSkinsPlugin extends JavaPlugin {
     }
 
     private NmsAccessor prepareNmsAccessor() {
-        switch (ReflectionHelper.serverVersion) {
-            case "v1_8_R3":
-                return new V1_8();
-            case "v1_9_R2":
-                return new V1_9();
-            case "v1_10_R1":
-                return new V1_10();
-            case "v1_11_R1":
-                return new V1_11();
-            case "v1_12_R1":
-                return new V1_12();
-            case "v1_13_R2":
-                return new V1_13();
-            case "v1_14_R1":
-                return new V1_14();
-            case "v1_15_R1":
-                return new V1_15();
-            case "v1_16_R3":
-                return new V1_16();
-            case "v1_17_R1":
-                return new V1_17();
-            default:
-                throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
-                        ReflectionHelper.serverVersion));
-        }
+        return switch (ReflectionHelper.serverVersion) {
+            case "v1_12_R1" -> new V1_12();
+            case "v1_13_R2" -> new V1_13();
+            case "v1_14_R1" -> new V1_14();
+            case "v1_15_R1" -> new V1_15();
+            case "v1_16_R3" -> new V1_16();
+            case "v1_17_R1" -> new V1_17();
+            default -> throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
+                    ReflectionHelper.serverVersion));
+        };
     }
 
     public SkinService getSkinService() {
