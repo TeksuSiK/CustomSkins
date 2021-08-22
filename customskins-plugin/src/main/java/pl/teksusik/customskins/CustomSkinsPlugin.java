@@ -16,8 +16,6 @@ import pl.teksusik.customskins.service.SkinService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class CustomSkinsPlugin extends JavaPlugin {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
@@ -32,7 +30,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
-        this.skinService = new SkinService(this, storage, new MineskinClient("customskins"));
+        this.skinService = new SkinService(this, storage, new MineskinClient("pl/teksusik/customskins"));
         this.skinService.prepareSQL();
         this.paperCommandManager = new PaperCommandManager(this);
         this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));

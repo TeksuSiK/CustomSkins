@@ -1,2 +1,3 @@
 rootProject.name = 'CustomSkins'
+include ':customskins-plugin'
 
