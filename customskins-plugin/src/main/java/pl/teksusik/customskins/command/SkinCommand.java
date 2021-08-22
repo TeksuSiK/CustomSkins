@@ -64,7 +64,6 @@ public class SkinCommand extends BaseCommand {
         }
 
         String name = args[0];
-        System.out.println(name);
         if (skinService.getSkin(player, name).isPresent()) {
             adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinAlreadyExists()));
             return;
