@@ -17,9 +17,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("MySQL connection data")
     private String mysqlHost = "0.0.0.0";
     private int mysqlPort = 3306;
-    private String mysqlDatabase = "pl/teksusik/customskins";
-    private String mysqlUsername = "pl/teksusik/customskins";
-    private String mysqlPassword = "pl/teksusik/customskins";
+    private String mysqlDatabase = "customskins";
+    private String mysqlUsername = "customskins";
+    private String mysqlPassword = "customskins";
     @Comment("SQLite file name")
     private String sqliteFile = "customskins.db";
 
