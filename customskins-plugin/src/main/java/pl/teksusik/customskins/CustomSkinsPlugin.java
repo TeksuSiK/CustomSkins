@@ -26,21 +26,17 @@ public class CustomSkinsPlugin extends JavaPlugin {
 
     private Storage storage;
     private SkinService skinService;
-    private NmsAccessor nmsAccessor;
-    private BukkitAudiences adventure;
-
-    private PaperCommandManager paperCommandManager;
 
     @Override
     public void onEnable() {
         this.loadPluginConfiguration();
         this.loadDatabase();
-        this.nmsAccessor = this.prepareNmsAccessor();
-        this.adventure = BukkitAudiences.create(this);
+        NmsAccessor nmsAccessor = this.prepareNmsAccessor();
+        BukkitAudiences adventure = BukkitAudiences.create(this);
         this.skinService = new SkinService(this, storage, nmsAccessor, new MineskinClient("pl/teksusik/customskins"));
         this.skinService.prepareSQL();
-        this.paperCommandManager = new PaperCommandManager(this);
-        this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService, adventure));
+        PaperCommandManager paperCommandManager = new PaperCommandManager(this);
+        paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService, adventure));
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
 
