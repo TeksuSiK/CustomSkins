@@ -3,6 +3,7 @@ package pl.teksusik.customskins;
 import co.aikar.commands.PaperCommandManager;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.teksusik.customskins.command.SkinCommand;
 import pl.teksusik.customskins.data.PluginConfiguration;
@@ -26,6 +27,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
     private Storage storage;
     private SkinService skinService;
     private NmsAccessor nmsAccessor;
+    private BukkitAudiences adventure;
 
     private PaperCommandManager paperCommandManager;
 
@@ -34,10 +36,11 @@ public class CustomSkinsPlugin extends JavaPlugin {
         this.loadPluginConfiguration();
         this.loadDatabase();
         this.nmsAccessor = this.prepareNmsAccessor();
+        this.adventure = BukkitAudiences.create(this);
         this.skinService = new SkinService(this, storage, nmsAccessor, new MineskinClient("pl/teksusik/customskins"));
         this.skinService.prepareSQL();
         this.paperCommandManager = new PaperCommandManager(this);
-        this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService));
+        this.paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService, adventure));
         this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
 

@@ -1,9 +1,12 @@
 package pl.teksusik.customskins.util;
 
-import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class ChatHelper {
-    public static void sendMessage(Player player, String message, Object... replacements) {
-        player.sendMessage(String.format(message, replacements));
+    private final static MiniMessage MINI_MESSAGE = MiniMessage.get();
+
+    public static Component getAsComponent(String message, Object... replacements) {
+        return MINI_MESSAGE.parse(String.format(message, replacements));
     }
 }
