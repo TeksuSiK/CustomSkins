@@ -1,2 +1,11 @@
 rootProject.name = 'CustomSkins'
+include ':customskins-plugin'
+include ':customskins-nms'
+include ':V1_17'
+include ':V1_16'
+include ':V1_15'
+include ':V1_14'
+include ':V1_13'
+include ':V1_12'
+
 
