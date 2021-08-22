@@ -11,6 +11,7 @@ import pl.teksusik.customskins.data.Storage;
 import pl.teksusik.customskins.libs.mineskin.MineskinClient;
 import pl.teksusik.customskins.libs.mineskin.SkinOptions;
 import pl.teksusik.customskins.model.CustomSkin;
+import pl.teksusik.customskins.nms.NmsAccessor;
 import pl.teksusik.customskins.util.ReflectionHelper;
 
 import javax.management.ReflectionException;
@@ -30,11 +31,13 @@ public class SkinService {
     private final Set<CustomSkin> customSkins = new HashSet<>();
     private final CustomSkinsPlugin plugin;
     private final Storage storage;
+    private final NmsAccessor nmsAccessor;
     private final MineskinClient mineskinClient;
 
-    public SkinService(CustomSkinsPlugin plugin, Storage storage, MineskinClient mineskinClient) {
+    public SkinService(CustomSkinsPlugin plugin, Storage storage, NmsAccessor nmsAccessor, MineskinClient mineskinClient) {
         this.plugin = plugin;
         this.storage = storage;
+        this.nmsAccessor = nmsAccessor;
         this.mineskinClient = mineskinClient;
     }
 
@@ -171,7 +174,7 @@ public class SkinService {
     }
 
     public void setSkin(Player player, CustomSkin customSkin) {
-        GameProfile gameProfile = ((CraftPlayer) player).getProfile();
+        GameProfile gameProfile = this.nmsAccessor.getGameProfile(player);
         PropertyMap propertyMap = gameProfile.getProperties();
         if (propertyMap != null)
             propertyMap.clear();
