@@ -3,21 +3,21 @@ package pl.teksusik.customskins.libs.mineskin.data;
 @Deprecated
 public interface SkinCallback {
 
-	void done(Skin skin);
+    void done(Skin skin);
 
-	default void waiting(long delay) {
-	}
+    default void waiting(long delay) {
+    }
 
-	default void uploading() {
-	}
+    default void uploading() {
+    }
 
-	default void error(String errorMessage) {
-	}
+    default void error(String errorMessage) {
+    }
 
-	default void exception(Exception exception) {
-	}
+    default void exception(Exception exception) {
+    }
 
-	default void parseException(Exception exception, String body) {
-	}
+    default void parseException(Exception exception, String body) {
+    }
 
 }

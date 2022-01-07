@@ -85,11 +85,11 @@ public class MineskinClient {
 
     private Connection generateRequest(String endpoint) {
         Connection connection = Jsoup.connect(GENERATE_BASE + endpoint)
-                .method(Connection.Method.POST)
-                .userAgent(userAgent)
-                .ignoreContentType(true)
-                .ignoreHttpErrors(true)
-                .timeout(30000);
+            .method(Connection.Method.POST)
+            .userAgent(userAgent)
+            .ignoreContentType(true)
+            .ignoreHttpErrors(true)
+            .timeout(30000);
         if (apiKey != null) {
             connection.header("Authorization", "Bearer " + apiKey);
         }
@@ -98,11 +98,11 @@ public class MineskinClient {
 
     private Connection getRequest(String endpoint) {
         return Jsoup.connect(GET_BASE + endpoint)
-                .method(Connection.Method.GET)
-                .userAgent(userAgent)
-                .ignoreContentType(true)
-                .ignoreHttpErrors(true)
-                .timeout(5000);
+            .method(Connection.Method.GET)
+            .userAgent(userAgent)
+            .ignoreContentType(true)
+            .ignoreHttpErrors(true)
+            .timeout(5000);
     }
 
 
@@ -148,8 +148,8 @@ public class MineskinClient {
                 JsonObject body = options.toJson();
                 body.addProperty("url", url);
                 Connection connection = generateRequest("/url")
-                        .header("Content-Type", "application/json")
-                        .requestBody(body.toString());
+                    .header("Content-Type", "application/json")
+                    .requestBody(body.toString());
                 return handleResponse(connection.execute().body());
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -175,8 +175,8 @@ public class MineskinClient {
                 }
 
                 Connection connection = generateRequest("/upload")
-                        // It really doesn't like setting a content-type header here for some reason
-                        .data("file", file.getName(), new FileInputStream(file));
+                    // It really doesn't like setting a content-type header here for some reason
+                    .data("file", file.getName(), new FileInputStream(file));
                 options.addAsData(connection);
                 return handleResponse(connection.execute().body());
             } catch (Exception e) {
@@ -205,8 +205,8 @@ public class MineskinClient {
                 JsonObject body = options.toJson();
                 body.addProperty("user", uuid.toString());
                 Connection connection = generateRequest("/user")
-                        .header("Content-Type", "application/json")
-                        .requestBody(body.toString());
+                    .header("Content-Type", "application/json")
+                    .requestBody(body.toString());
                 return handleResponse(connection.execute().body());
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -244,12 +244,12 @@ public class MineskinClient {
         requestExecutor.execute(() -> {
             try {
                 Connection connection = Jsoup
-                        .connect(String.format(ID_FORMAT, id))
-                        .userAgent(userAgent)
-                        .method(Connection.Method.GET)
-                        .ignoreContentType(true)
-                        .ignoreHttpErrors(true)
-                        .timeout(10000);
+                    .connect(String.format(ID_FORMAT, id))
+                    .userAgent(userAgent)
+                    .method(Connection.Method.GET)
+                    .ignoreContentType(true)
+                    .ignoreHttpErrors(true)
+                    .timeout(10000);
                 String body = connection.execute().body();
                 handleResponse(body, callback);
             } catch (Exception e) {
@@ -299,12 +299,12 @@ public class MineskinClient {
                 callback.uploading();
 
                 Connection connection = Jsoup
-                        .connect(String.format(URL_FORMAT, url, options.toUrlParam()))
-                        .userAgent(userAgent)
-                        .method(Connection.Method.POST)
-                        .ignoreContentType(true)
-                        .ignoreHttpErrors(true)
-                        .timeout(40000);
+                    .connect(String.format(URL_FORMAT, url, options.toUrlParam()))
+                    .userAgent(userAgent)
+                    .method(Connection.Method.POST)
+                    .ignoreContentType(true)
+                    .ignoreHttpErrors(true)
+                    .timeout(40000);
                 if (apiKey != null) {
                     connection.header("Authorization", "Bearer " + apiKey);
                 }
@@ -356,13 +356,13 @@ public class MineskinClient {
                 callback.uploading();
 
                 Connection connection = Jsoup
-                        .connect(String.format(UPLOAD_FORMAT, options.toUrlParam()))
-                        .userAgent(userAgent)
-                        .method(Connection.Method.POST)
-                        .data("file", file.getName(), new FileInputStream(file))
-                        .ignoreContentType(true)
-                        .ignoreHttpErrors(true)
-                        .timeout(40000);
+                    .connect(String.format(UPLOAD_FORMAT, options.toUrlParam()))
+                    .userAgent(userAgent)
+                    .method(Connection.Method.POST)
+                    .data("file", file.getName(), new FileInputStream(file))
+                    .ignoreContentType(true)
+                    .ignoreHttpErrors(true)
+                    .timeout(40000);
                 if (apiKey != null) {
                     connection.header("Authorization", "Bearer " + apiKey);
                 }
@@ -414,12 +414,12 @@ public class MineskinClient {
                 callback.uploading();
 
                 Connection connection = Jsoup
-                        .connect(String.format(USER_FORMAT, uuid.toString(), options.toUrlParam()))
-                        .userAgent(userAgent)
-                        .method(Connection.Method.GET)
-                        .ignoreContentType(true)
-                        .ignoreHttpErrors(true)
-                        .timeout(40000);
+                    .connect(String.format(USER_FORMAT, uuid.toString(), options.toUrlParam()))
+                    .userAgent(userAgent)
+                    .method(Connection.Method.GET)
+                    .ignoreContentType(true)
+                    .ignoreHttpErrors(true)
+                    .timeout(40000);
                 if (apiKey != null) {
                     connection.header("Authorization", "Bearer " + apiKey);
                 }

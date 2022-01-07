@@ -32,7 +32,8 @@ public class ReflectionHelper {
         }
     }
 
-    private ReflectionHelper() {}
+    private ReflectionHelper() {
+    }
 
     public static Class<?> getBukkitClass(String clazz) throws Exception {
         return Class.forName("org.bukkit.craftbukkit." + serverVersion + "." + clazz);

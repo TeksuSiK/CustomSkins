@@ -51,14 +51,15 @@ public class CustomSkinsPlugin extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+    }
 
     private PluginConfiguration loadPluginConfiguration() {
         return this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, okaeriConfig -> {
-           okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
-           okaeriConfig.withBindFile(this.pluginConfigurationFile);
-           okaeriConfig.saveDefaults();
-           okaeriConfig.load();
+            okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
+            okaeriConfig.withBindFile(this.pluginConfigurationFile);
+            okaeriConfig.saveDefaults();
+            okaeriConfig.load();
         });
     }
 
@@ -83,20 +84,29 @@ public class CustomSkinsPlugin extends JavaPlugin {
                     this.pluginConfiguration.getMysqlPassword());
             case SQLITE:
                 return new SQLiteStorage(sqliteFile);
-            default: throw new IllegalArgumentException("The storage type you entered is invalid");
+            default:
+                throw new IllegalArgumentException("The storage type you entered is invalid");
         }
     }
 
     private NmsAccessor prepareNmsAccessor() {
         switch (ReflectionHelper.serverVersion) {
-            case "v1_12_R1": return new V1_12();
-            case "v1_13_R2": return new V1_13();
-            case "v1_14_R1": return new V1_14();
-            case "v1_15_R1": return new V1_15();
-            case "v1_16_R3": return new V1_16();
-            case "v1_17_R1": return new V1_17();
-            case "v1_18_R1": return new V1_18();
-            default: throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
+            case "v1_12_R1":
+                return new V1_12();
+            case "v1_13_R2":
+                return new V1_13();
+            case "v1_14_R1":
+                return new V1_14();
+            case "v1_15_R1":
+                return new V1_15();
+            case "v1_16_R3":
+                return new V1_16();
+            case "v1_17_R1":
+                return new V1_17();
+            case "v1_18_R1":
+                return new V1_18();
+            default:
+                throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
                     ReflectionHelper.serverVersion));
         }
     }

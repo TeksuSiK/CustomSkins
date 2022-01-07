@@ -18,7 +18,7 @@ public enum Model {
 
     public Variant toVariant() {
         switch (this) {
-			default:
+            default:
             case DEFAULT:
                 return Variant.CLASSIC;
             case SLIM:

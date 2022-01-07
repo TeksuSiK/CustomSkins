@@ -39,7 +39,7 @@ public class SkinService {
         this.mineskinClient = mineskinClient;
 
         try (final Connection connection = this.storage.getHikariDataSource().getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `customskins_skins` (`owner` varchar(36) NOT NULL, `name` varchar(51) NOT NULL, `texture` longtext NOT NULL, `signature` longtext NOT NULL);")) {
+             final PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `customskins_skins` (`owner` varchar(36) NOT NULL, `name` varchar(51) NOT NULL, `texture` longtext NOT NULL, `signature` longtext NOT NULL);")) {
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -49,15 +49,15 @@ public class SkinService {
 
     public void loadSkins(UUID uuid) {
         try (final Connection connection = this.storage.getHikariDataSource().getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM customskins_skins WHERE owner = ?")) {
+             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM customskins_skins WHERE owner = ?")) {
             preparedStatement.setString(1, uuid.toString());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next())
                     this.addSkin(new CustomSkin(uuid,
-                            resultSet.getString("name"),
-                            resultSet.getString("texture"),
-                            resultSet.getString("signature")));
+                        resultSet.getString("name"),
+                        resultSet.getString("texture"),
+                        resultSet.getString("signature")));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -70,8 +70,8 @@ public class SkinService {
 
     public Set<CustomSkin> getSkins(UUID uuid) {
         return this.customSkins.stream()
-                .filter(customSkin -> customSkin.getOwner().equals(uuid))
-                .collect(Collectors.toSet());
+            .filter(customSkin -> customSkin.getOwner().equals(uuid))
+            .collect(Collectors.toSet());
     }
 
     public Set<CustomSkin> getSkins(Player player) {
@@ -80,9 +80,9 @@ public class SkinService {
 
     public Optional<CustomSkin> getSkin(UUID owner, String name) {
         return this.customSkins.stream()
-                .filter(customSkin -> customSkin.getOwner().equals(owner))
-                .filter(customSkin -> customSkin.getName().equalsIgnoreCase(name))
-                .findFirst();
+            .filter(customSkin -> customSkin.getOwner().equals(owner))
+            .filter(customSkin -> customSkin.getName().equalsIgnoreCase(name))
+            .findFirst();
     }
 
     public Optional<CustomSkin> getSkin(Player player, String name) {
@@ -91,7 +91,7 @@ public class SkinService {
 
     public CustomSkin createSkin(CustomSkin customSkin) {
         try (final Connection connection = this.storage.getHikariDataSource().getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO customskins_skins VALUES (?, ?, ?, ?)")) {
+             final PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO customskins_skins VALUES (?, ?, ?, ?)")) {
             preparedStatement.setString(1, customSkin.getOwner().toString());
             preparedStatement.setString(2, customSkin.getName());
             preparedStatement.setString(3, customSkin.getTexture());
@@ -167,15 +167,15 @@ public class SkinService {
         if (propertyMap != null)
             propertyMap.clear();
         propertyMap.put("textures", new Property("textures",
-                customSkin.getTexture(),
-                customSkin.getSignature()));
+            customSkin.getTexture(),
+            customSkin.getSignature()));
         Bukkit.getScheduler().runTask(this.plugin, () -> Bukkit.getOnlinePlayers()
-                .stream()
-                .filter(players -> !player.equals(players))
-                .forEach(players -> {
-                    players.hidePlayer(this.plugin, player);
-                    players.showPlayer(this.plugin, player);
-                }));
+            .stream()
+            .filter(players -> !player.equals(players))
+            .forEach(players -> {
+                players.hidePlayer(this.plugin, player);
+                players.showPlayer(this.plugin, player);
+            }));
         this.updateSkin(player);
     }
 
