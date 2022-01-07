@@ -1,4 +1,5 @@
 plugins {
+    id 'idea'
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
@@ -12,8 +13,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
     jar.dependsOn shadowJar
 
@@ -24,5 +25,11 @@ subprojects {
         maven { url 'https://repo.aikar.co/content/groups/aikar/' }
         maven { url 'https://storehouse.okaeri.eu/repository/maven-public/' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+}
+
+idea {
+    project {
+        jdkName = "17"
     }
 }

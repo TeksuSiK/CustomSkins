@@ -1,4 +1,4 @@
-package pl.teksusik.customskins.listener;
+package pl.teksusik.customskins.skin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -7,10 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import pl.teksusik.customskins.CustomSkinsPlugin;
 
-public class PlayerJoinListener implements Listener {
+public class SkinListener implements Listener {
     private final CustomSkinsPlugin plugin;
 
-    public PlayerJoinListener(CustomSkinsPlugin plugin) {
+    public SkinListener(CustomSkinsPlugin plugin) {
         this.plugin = plugin;
     }
 

@@ -1,4 +1,4 @@
-package pl.teksusik.customskins.data;
+package pl.teksusik.customskins.storage;
 
 import com.zaxxer.hikari.HikariDataSource;
 

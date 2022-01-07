@@ -1,11 +1,11 @@
-package pl.teksusik.customskins.data;
+package pl.teksusik.customskins.configuration;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
-import pl.teksusik.customskins.model.StorageType;
+import pl.teksusik.customskins.storage.StorageType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class PluginConfiguration extends OkaeriConfig {
     private String invalidModelMessage = "<dark_red>Error: <red>Model you provided does not exists. Valid models: DEFAULT, SLIM";
     @Comment("Skin already exists")
     private String skinAlreadyExists = "<dark_red>Error: <red>Skin with provided name already exists";
-    @Comment("Bad ussage message")
+    @Comment("Bad usage message")
     private String badUsageMessage = "<dark_red>Error: <red>Incorrect usage. Correct usage: /skins help";
 
     public StorageType getStorageType() {
