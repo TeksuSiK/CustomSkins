@@ -6,12 +6,12 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.libs.mineskin.SkinOptions;
 import pl.teksusik.customskins.libs.mineskin.Variant;
 import pl.teksusik.customskins.libs.mineskin.Visibility;
-import pl.teksusik.customskins.util.ChatHelper;
 
 @CommandAlias("skin|skins|customskins")
 public class SkinCommand extends BaseCommand {
@@ -27,15 +27,15 @@ public class SkinCommand extends BaseCommand {
 
     @Default
     public void onDefault(Player player) {
-        for (String message : this.pluginConfiguration.getHelpCommands())
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(message));
+        for (Component message : this.pluginConfiguration.getHelpCommands())
+            this.adventure.player(player).sendMessage(message);
     }
 
     @Subcommand("list")
     public void onList(Player player) {
-        this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinsAvailableMessage()));
+        this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinsAvailable());
         for (CustomSkin customSkin : this.skinService.getSkins(player)) {
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent("<green> - <reset>" + customSkin.getName()));
+            this.adventure.player(player).sendMessage(Component.text("-" + customSkin.getName()));
         }
     }
 
@@ -43,27 +43,27 @@ public class SkinCommand extends BaseCommand {
     @Syntax("<name>")
     public void onWear(Player player, String[] args) {
         if (args.length != 1) {
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getBadUsageMessage()));
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getBadUsage());
             return;
         }
 
         this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
             this.skinService.setSkin(player, customSkin);
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinChangedMessage()));
-        }, () -> this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinNotExistsMessage())));
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinChanged());
+        }, () -> this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinNotExists()));
     }
 
     @Subcommand("add")
     @Syntax("<name> <url> <model>")
     public void onAdd(Player player, String[] args) {
         if (args.length != 3) {
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getBadUsageMessage()));
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getBadUsage());
             return;
         }
 
         String name = args[0];
-        if (skinService.getSkin(player, name).isPresent()) {
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinAlreadyExists()));
+        if (this.skinService.getSkin(player, name).isPresent()) {
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinAlreadyExists());
             return;
         }
 
@@ -71,29 +71,29 @@ public class SkinCommand extends BaseCommand {
         try {
             variant = Variant.valueOf(args[2].toUpperCase());
         } catch (IllegalArgumentException exception) {
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getInvalidModelMessage()));
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getInvalidModel());
             return;
         }
 
-        skinService.uploadSkin(player, name, args[1], SkinOptions.create(name, variant, Visibility.PRIVATE));
+        this.skinService.uploadSkin(player, name, args[1], SkinOptions.create(name, variant, Visibility.PRIVATE));
     }
 
     @Subcommand("delete")
     @Syntax("<name>")
     public void onDelete(Player player, String[] args) {
         if (args.length != 1) {
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getBadUsageMessage()));
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getBadUsage());
             return;
         }
 
         this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
             this.skinService.deleteSkin(customSkin);
-            this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinDeletedMessage()));
-        }, () -> this.adventure.player(player).sendMessage(ChatHelper.getAsComponent(this.pluginConfiguration.getSkinNotExistsMessage())));
+            this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinDeleted());
+        }, () -> this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinNotExists()));
     }
 
     @Subcommand("version")
     public void onVersion(Player player) {
-        this.adventure.player(player).sendMessage(ChatHelper.getAsComponent("CustomSkins v1.0 by teksusik."));
+        this.adventure.player(player).sendMessage(Component.text("CustomSkins v1.2 by teksusik."));
     }
 }

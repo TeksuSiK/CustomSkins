@@ -156,8 +156,7 @@ public class SkinService {
             } else {
                 ReflectionHelper.invokeMethod(getHandleMethod.invoke(player), "triggerHealthUpdate");
             }
-        } catch (IllegalAccessException | InvocationTargetException | ReflectionException exception) {
-            exception.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException | ReflectionException ignored) {
         }
     }
 

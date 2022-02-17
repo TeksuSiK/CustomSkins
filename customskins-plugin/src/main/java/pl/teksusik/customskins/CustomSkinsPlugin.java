@@ -4,8 +4,10 @@ import co.aikar.commands.PaperCommandManager;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.storage.Storage;
@@ -57,6 +59,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
     private PluginConfiguration loadPluginConfiguration() {
         return this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, okaeriConfig -> {
             okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
+            okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
             okaeriConfig.withBindFile(this.pluginConfigurationFile);
             okaeriConfig.saveDefaults();
             okaeriConfig.load();
