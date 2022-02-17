@@ -7,6 +7,14 @@ compileJava {
 shadowJar {
     relocate 'co.aikar.commands', 'pl.teksusik.customskins.libs.acf'
     relocate 'co.aikar.locales', 'pl.teksusik.customskins.libs.locales'
+
+    relocate 'eu.okaeri', 'pl.teksusik.customskins.libs.eu.okaeri'
+
+    relocate 'com.zaxxer', 'pl.teksusik.customskins.libs.com.zaxxer'
+
+    relocate 'net.kyori', 'pl.teksusik.customskins.libs.net.kyori'
+
+    relocate 'org.jsoup', 'pl.teksusik.customskins.libs.org.jsoup'
 }
 
 dependencies {
