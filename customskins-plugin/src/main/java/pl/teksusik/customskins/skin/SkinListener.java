@@ -17,7 +17,6 @@ public class SkinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        //TEMPORARY FIX - TODO
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             if (this.plugin.getSkinService().getSkins(player).size() == 0)
                 this.plugin.getSkinService().loadSkins(player);

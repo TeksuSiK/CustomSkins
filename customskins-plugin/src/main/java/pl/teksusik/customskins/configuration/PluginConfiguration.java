@@ -56,6 +56,8 @@ public class PluginConfiguration extends OkaeriConfig {
     private Component skinAlreadyExists = this.miniMessage.deserialize("<dark_red>Error: <red>Skin with provided name already exists");
     @Comment("Bad usage message")
     private Component badUsage = this.miniMessage.deserialize("<dark_red>Error: <red>Incorrect usage. Correct usage: /skins help");
+    @Comment("Upload skin message")
+    private Component skinUploaded = this.miniMessage.deserialize("<green>You successfully uploaded your skin");
 
     public StorageType getStorageType() {
         return storageType;
@@ -115,6 +117,10 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public Component getBadUsage() {
         return badUsage;
+    }
+
+    public Component getSkinUploaded() {
+        return skinUploaded;
     }
 
     @Exclude

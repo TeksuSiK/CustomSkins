@@ -35,7 +35,7 @@ public class SkinCommand extends BaseCommand {
     public void onList(Player player) {
         this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinsAvailable());
         for (CustomSkin customSkin : this.skinService.getSkins(player)) {
-            this.adventure.player(player).sendMessage(Component.text("-" + customSkin.getName()));
+            this.adventure.player(player).sendMessage(Component.text("- " + customSkin.getName()));
         }
     }
 
@@ -75,7 +75,8 @@ public class SkinCommand extends BaseCommand {
             return;
         }
 
-        this.skinService.uploadSkin(player, name, args[1], SkinOptions.create(name, variant, Visibility.PRIVATE));
+        this.skinService.uploadSkin(player, name, args[1], SkinOptions.create(name, variant, Visibility.PRIVATE))
+            .thenAccept(action -> this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinUploaded()));
     }
 
     @Subcommand("delete")

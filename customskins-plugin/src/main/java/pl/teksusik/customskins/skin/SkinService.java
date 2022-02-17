@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class SkinService {
@@ -178,8 +179,8 @@ public class SkinService {
         this.updateSkin(player);
     }
 
-    public void uploadSkin(Player player, String name, String url, SkinOptions skinOptions) {
-        this.mineskinClient.generateUrl(url, skinOptions).thenAcceptAsync(skin -> {
+    public CompletableFuture<Void> uploadSkin(Player player, String name, String url, SkinOptions skinOptions) {
+        return this.mineskinClient.generateUrl(url, skinOptions).thenAcceptAsync(skin -> {
             CustomSkin generatedSkin = new CustomSkin(player.getUniqueId(), name, skin.data.texture.value, skin.data.texture.signature);
             createSkin(generatedSkin);
         });
