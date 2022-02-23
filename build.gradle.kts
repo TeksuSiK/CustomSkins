@@ -25,6 +25,7 @@ subprojects {
         maven(url = "https://repo.aikar.co/content/groups/aikar/")
         maven(url = "https://storehouse.okaeri.eu/repository/maven-public/")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
+        maven(url = "https://repo.panda-lang.org/releases")
     }
 }
 
