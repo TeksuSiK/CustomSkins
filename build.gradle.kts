@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = "pl.teksusik"
-    version = "1.2-RELEASE"
+    version = "1.3-SNAPSHOT"
 }
 
 subprojects {

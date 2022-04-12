@@ -98,6 +98,6 @@ public class SkinCommand extends BaseCommand {
 
     @Subcommand("version")
     public void onVersion(Player player) {
-        this.adventure.player(player).sendMessage(Component.text("CustomSkins v1.2 by teksusik."));
+        this.adventure.player(player).sendMessage(Component.text("CustomSkins 1.3-SNAPSHOT by teksusik."));
     }
 }
