@@ -19,14 +19,14 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     
-    @Comment("Choose type of data storage for plugin (MYSQL, SQLITE)")
+    @Comment("Choose type of data storage for plugin (MYSQL, SQLITE, MONGODB)")
     private StorageType storageType = StorageType.MYSQL;
-    @Comment("MySQL connection data")
-    private String mysqlHost = "0.0.0.0";
-    private int mysqlPort = 3306;
-    private String mysqlDatabase = "customskins";
-    private String mysqlUsername = "customskins";
-    private String mysqlPassword = "customskins";
+    @Comment("Database connection data")
+    private String host = "0.0.0.0";
+    private int port = 3306;
+    private String database = "customskins";
+    private String username = "customskins";
+    private String password = "customskins";
     @Comment("SQLite file name")
     private String sqliteFile = "customskins.db";
 
@@ -63,24 +63,24 @@ public class PluginConfiguration extends OkaeriConfig {
         return storageType;
     }
 
-    public String getMysqlHost() {
-        return mysqlHost;
+    public String getHost() {
+        return host;
     }
 
-    public int getMysqlPort() {
-        return mysqlPort;
+    public int getPort() {
+        return port;
     }
 
-    public String getMysqlDatabase() {
-        return mysqlDatabase;
+    public String getDatabase() {
+        return database;
     }
 
-    public String getMysqlUsername() {
-        return mysqlUsername;
+    public String getUsername() {
+        return username;
     }
 
-    public String getMysqlPassword() {
-        return mysqlPassword;
+    public String getPassword() {
+        return password;
     }
 
     public String getSqliteFile() {

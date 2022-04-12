@@ -1,13 +1,10 @@
 package pl.teksusik.customskins.storage.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
-import pl.teksusik.customskins.storage.Storage;
 
 import java.sql.SQLException;
 
-public class MySQLStorage implements Storage {
-    private final HikariDataSource hikariDataSource;
-
+public class MySQLStorage extends SQLStorage {
     public MySQLStorage(String host, int port, String database, String username, String password) {
         this.hikariDataSource = new HikariDataSource();
 
@@ -35,10 +32,7 @@ public class MySQLStorage implements Storage {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-    }
 
-    @Override
-    public HikariDataSource getHikariDataSource() {
-        return hikariDataSource;
+        this.createTableIfNotExists();
     }
 }

@@ -5,16 +5,15 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.storage.Storage;
+import pl.teksusik.customskins.storage.impl.MongoStorage;
 import pl.teksusik.customskins.storage.impl.MySQLStorage;
 import pl.teksusik.customskins.storage.impl.SQLiteStorage;
 import pl.teksusik.customskins.libs.mineskin.MineskinClient;
-import pl.teksusik.customskins.skin.SkinListener;
 import pl.teksusik.customskins.storage.StorageType;
 import pl.teksusik.customskins.nms.NmsAccessor;
 import pl.teksusik.customskins.nms.V1_12;
@@ -46,10 +45,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
 
         BukkitAudiences adventure = BukkitAudiences.create(this);
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
-        paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, skinService, adventure));
-
-        PluginManager pluginManager = this.getServer().getPluginManager();
-        pluginManager.registerEvents(new SkinListener(this), this);
+        paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, storage, skinService, adventure));
     }
 
     @Override
@@ -80,13 +76,16 @@ public class CustomSkinsPlugin extends JavaPlugin {
 
         switch (this.pluginConfiguration.getStorageType()) {
             case MYSQL:
-                return new MySQLStorage(this.pluginConfiguration.getMysqlHost(),
-                    this.pluginConfiguration.getMysqlPort(),
-                    this.pluginConfiguration.getMysqlDatabase(),
-                    this.pluginConfiguration.getMysqlUsername(),
-                    this.pluginConfiguration.getMysqlPassword());
+                return new MySQLStorage(this.pluginConfiguration.getHost(),
+                    this.pluginConfiguration.getPort(),
+                    this.pluginConfiguration.getDatabase(),
+                    this.pluginConfiguration.getUsername(),
+                    this.pluginConfiguration.getPassword());
             case SQLITE:
                 return new SQLiteStorage(sqliteFile);
+            case MONGODB:
+                return new MongoStorage(this.pluginConfiguration.getHost(),
+                    this.pluginConfiguration.getPort());
             default:
                 throw new IllegalArgumentException("The storage type you entered is invalid");
         }

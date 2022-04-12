@@ -12,15 +12,18 @@ import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.libs.mineskin.SkinOptions;
 import pl.teksusik.customskins.libs.mineskin.Variant;
 import pl.teksusik.customskins.libs.mineskin.Visibility;
+import pl.teksusik.customskins.storage.Storage;
 
 @CommandAlias("skin|skins|customskins")
 public class SkinCommand extends BaseCommand {
     private final PluginConfiguration pluginConfiguration;
+    private final Storage skinStorage;
     private final SkinService skinService;
     private final BukkitAudiences adventure;
 
-    public SkinCommand(PluginConfiguration pluginConfiguration, SkinService skinService, BukkitAudiences adventure) {
+    public SkinCommand(PluginConfiguration pluginConfiguration, Storage skinStorage, SkinService skinService, BukkitAudiences adventure) {
         this.pluginConfiguration = pluginConfiguration;
+        this.skinStorage = skinStorage;
         this.skinService = skinService;
         this.adventure = adventure;
     }
@@ -34,7 +37,7 @@ public class SkinCommand extends BaseCommand {
     @Subcommand("list")
     public void onList(Player player) {
         this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinsAvailable());
-        for (CustomSkin customSkin : this.skinService.getSkins(player)) {
+        for (CustomSkin customSkin : this.skinStorage.getAllSkinsByOwner(player.getUniqueId())) {
             this.adventure.player(player).sendMessage(Component.text("- " + customSkin.getName()));
         }
     }
@@ -47,7 +50,7 @@ public class SkinCommand extends BaseCommand {
             return;
         }
 
-        this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
+        this.skinStorage.findSkin(player.getUniqueId(), args[0]).ifPresentOrElse(customSkin -> {
             this.skinService.setSkin(player, customSkin);
             this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinChanged());
         }, () -> this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinNotExists()));
@@ -62,7 +65,7 @@ public class SkinCommand extends BaseCommand {
         }
 
         String name = args[0];
-        if (this.skinService.getSkin(player, name).isPresent()) {
+        if (this.skinStorage.findSkin(player.getUniqueId(), name).isPresent()) {
             this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinAlreadyExists());
             return;
         }
@@ -87,8 +90,8 @@ public class SkinCommand extends BaseCommand {
             return;
         }
 
-        this.skinService.getSkin(player, args[0]).ifPresentOrElse(customSkin -> {
-            this.skinService.deleteSkin(customSkin);
+        this.skinStorage.findSkin(player.getUniqueId(), args[0]).ifPresentOrElse(customSkin -> {
+            this.skinStorage.deleteSkin(customSkin);
             this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinDeleted());
         }, () -> this.adventure.player(player).sendMessage(this.pluginConfiguration.getSkinNotExists()));
     }
