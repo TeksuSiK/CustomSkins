@@ -30,14 +30,14 @@ dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")
 
-    implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:3.4.2")
 
     implementation("com.zaxxer:HikariCP:5.0.1")
 
-    implementation("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")
-    implementation("net.kyori:adventure-platform-bukkit:4.0.2-SNAPSHOT")
+    implementation("net.kyori:adventure-text-minimessage:4.10.1")
+    implementation("net.kyori:adventure-platform-bukkit:4.1.0")
 
     implementation("org.jsoup:jsoup:1.14.3")
 }
