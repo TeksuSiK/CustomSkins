@@ -85,7 +85,10 @@ public class CustomSkinsPlugin extends JavaPlugin {
                 return new SQLiteStorage(sqliteFile);
             case MONGODB:
                 return new MongoStorage(this.pluginConfiguration.getHost(),
-                    this.pluginConfiguration.getPort());
+                    this.pluginConfiguration.getPort(),
+                    this.pluginConfiguration.getDatabase(),
+                    this.pluginConfiguration.getUsername(),
+                    this.pluginConfiguration.getPassword().toCharArray());
             default:
                 throw new IllegalArgumentException("The storage type you entered is invalid");
         }

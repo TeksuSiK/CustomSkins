@@ -1,6 +1,9 @@
 package pl.teksusik.customskins.storage.impl;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -14,12 +17,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class MongoStorage implements Storage {
-    private final MongoClient client;
     private final MongoDatabase database;
 
-    public MongoStorage(String host, int port) {
-        this.client = new MongoClient(host, port);
-        this.database = this.client.getDatabase("customskins");
+    public MongoStorage(String host, int port, String database, String username, char[] password) {
+        MongoCredential credential = MongoCredential.createCredential(username, database, password);
+        MongoClient client = new MongoClient(new ServerAddress(host, port), credential, MongoClientOptions.builder().build());
+        this.database = client.getDatabase(database);
     }
 
     @Override
