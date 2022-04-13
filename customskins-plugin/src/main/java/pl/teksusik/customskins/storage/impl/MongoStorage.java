@@ -32,6 +32,10 @@ public class MongoStorage implements Storage {
             Filters.eq("name", name))
         ).first();
 
+        if (document == null) {
+            return Optional.empty();
+        }
+
         return Optional.of(new CustomSkin(document.get("owner", UUID.class),
             document.getString("name"),
             document.getString("texture"),
