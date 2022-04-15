@@ -6,6 +6,7 @@ import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
@@ -31,13 +32,16 @@ import java.io.IOException;
 
 public class CustomSkinsPlugin extends JavaPlugin {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
+    private final File messageConfigurationFile = new File(getDataFolder(), "messages.yml");
     private PluginConfiguration pluginConfiguration;
+    private MessageConfiguration messageConfiguration;
 
     private SkinService skinService;
 
     @Override
     public void onEnable() {
         this.pluginConfiguration = this.loadPluginConfiguration();
+        this.messageConfiguration = this.loadMessageConfiguration();
 
         Storage storage = this.loadStorage();
         NmsAccessor nmsAccessor = this.prepareNmsAccessor();
@@ -45,7 +49,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
 
         BukkitAudiences adventure = BukkitAudiences.create(this);
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
-        paperCommandManager.registerCommand(new SkinCommand(pluginConfiguration, storage, skinService, adventure));
+        paperCommandManager.registerCommand(new SkinCommand(messageConfiguration, storage, skinService, adventure));
     }
 
     @Override
@@ -55,8 +59,17 @@ public class CustomSkinsPlugin extends JavaPlugin {
     private PluginConfiguration loadPluginConfiguration() {
         return this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, okaeriConfig -> {
             okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
-            okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
             okaeriConfig.withBindFile(this.pluginConfigurationFile);
+            okaeriConfig.saveDefaults();
+            okaeriConfig.load();
+        });
+    }
+
+    private MessageConfiguration loadMessageConfiguration() {
+        return this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
+            okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
+            okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
+            okaeriConfig.withBindFile(this.messageConfigurationFile);
             okaeriConfig.saveDefaults();
             okaeriConfig.load();
         });
