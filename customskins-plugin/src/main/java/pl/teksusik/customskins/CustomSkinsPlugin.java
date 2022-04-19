@@ -4,18 +4,11 @@ import co.aikar.commands.PaperCommandManager;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
-import pl.teksusik.customskins.configuration.MiniMessageTransformer;
-import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
-import pl.teksusik.customskins.storage.Storage;
-import pl.teksusik.customskins.storage.impl.MongoStorage;
-import pl.teksusik.customskins.storage.impl.MySQLStorage;
-import pl.teksusik.customskins.storage.impl.SQLiteStorage;
+import pl.teksusik.customskins.configuration.i18n.MessageService;
 import pl.teksusik.customskins.libs.mineskin.MineskinClient;
-import pl.teksusik.customskins.storage.StorageType;
 import pl.teksusik.customskins.nms.NmsAccessor;
 import pl.teksusik.customskins.nms.V1_12;
 import pl.teksusik.customskins.nms.V1_13;
@@ -24,7 +17,13 @@ import pl.teksusik.customskins.nms.V1_15;
 import pl.teksusik.customskins.nms.V1_16;
 import pl.teksusik.customskins.nms.V1_17;
 import pl.teksusik.customskins.nms.V1_18;
+import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.skin.SkinService;
+import pl.teksusik.customskins.storage.Storage;
+import pl.teksusik.customskins.storage.StorageType;
+import pl.teksusik.customskins.storage.impl.MongoStorage;
+import pl.teksusik.customskins.storage.impl.MySQLStorage;
+import pl.teksusik.customskins.storage.impl.SQLiteStorage;
 import pl.teksusik.customskins.util.ReflectionHelper;
 
 import java.io.File;
@@ -32,16 +31,14 @@ import java.io.IOException;
 
 public class CustomSkinsPlugin extends JavaPlugin {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
-    private final File messageConfigurationFile = new File(getDataFolder(), "messages.yml");
     private PluginConfiguration pluginConfiguration;
-    private MessageConfiguration messageConfiguration;
 
     private SkinService skinService;
 
     @Override
     public void onEnable() {
         this.pluginConfiguration = this.loadPluginConfiguration();
-        this.messageConfiguration = this.loadMessageConfiguration();
+        MessageService messageService = new MessageService(this);
 
         Storage storage = this.loadStorage();
         NmsAccessor nmsAccessor = this.prepareNmsAccessor();
@@ -49,7 +46,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
 
         BukkitAudiences adventure = BukkitAudiences.create(this);
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
-        paperCommandManager.registerCommand(new SkinCommand(messageConfiguration, storage, skinService, adventure));
+        paperCommandManager.registerCommand(new SkinCommand(messageService, storage, skinService, adventure));
     }
 
     @Override
@@ -60,16 +57,6 @@ public class CustomSkinsPlugin extends JavaPlugin {
         return this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, okaeriConfig -> {
             okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
             okaeriConfig.withBindFile(this.pluginConfigurationFile);
-            okaeriConfig.saveDefaults();
-            okaeriConfig.load();
-        });
-    }
-
-    private MessageConfiguration loadMessageConfiguration() {
-        return this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
-            okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
-            okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
-            okaeriConfig.withBindFile(this.messageConfigurationFile);
             okaeriConfig.saveDefaults();
             okaeriConfig.load();
         });
