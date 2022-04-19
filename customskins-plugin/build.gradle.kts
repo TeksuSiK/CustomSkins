@@ -11,6 +11,7 @@ tasks.named<ShadowJar>("shadowJar") {
     relocate("eu.okaeri", "pl.teksusik.customskins.libs.eu.okaeri")
 
     relocate("com.zaxxer", "pl.teksusik.customskins.libs.com.zaxxer")
+    relocate("com.mongodb", "pl.teksusik.customskins.libs.com.mongodb")
 
     relocate("net.kyori", "pl.teksusik.customskins.libs.net.kyori")
 
