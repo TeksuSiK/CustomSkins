@@ -16,6 +16,7 @@ tasks.named<ShadowJar>("shadowJar") {
     relocate("net.kyori", "pl.teksusik.customskins.libs.net.kyori")
 
     relocate("org.jsoup", "pl.teksusik.customskins.libs.org.jsoup")
+    relocate("org.apache", "pl.teksusik.customskins.libs.org.apache")
 }
 
 dependencies {
@@ -42,4 +43,5 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.1.0")
 
     implementation("org.jsoup:jsoup:1.14.3")
+    implementation("commons-io:commons-io:2.11.0")
 }
