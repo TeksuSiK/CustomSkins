@@ -3,68 +3,75 @@ package pl.teksusik.customskins.configuration.i18n;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.apache.commons.io.FilenameUtils;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class MessageService {
-    private final JavaPlugin plugin;
-    private final Map<String, MessageConfiguration> messagesConfiguration;
-    private MessageConfiguration defaultConfiguration;
+    private final List<LocaleProvider<?>> localeProviders = new ArrayList<>();
+    private final Map<Locale, MessageConfiguration> messageConfigurations = new HashMap<>();
+    private final File langDirectory;
 
-    public MessageService(JavaPlugin plugin) {
-        this.plugin = plugin;
-        this.messagesConfiguration = this.loadMessageConfiguration();
+    private static final Locale DEFAULT_LOCALE = Locale.forLanguageTag("en-us");
+
+    public MessageService(File langDirectory) {
+        this.langDirectory = langDirectory;
     }
 
-    public Map<String, MessageConfiguration> loadMessageConfiguration() {
-        File langDirectory = new File(this.plugin.getDataFolder(), "lang");
-        if (!langDirectory.exists()) {
-            langDirectory.mkdir();
+    private LocaleProvider getLocaleProvider(Class<?> entityType) {
+        return this.localeProviders.stream()
+            .filter(provider -> provider.supports(entityType))
+            .findAny()
+            .orElse(null);
+    }
+
+    private Locale getLocale(Object entity) {
+        LocaleProvider localeProvider = this.getLocaleProvider(entity.getClass());
+        if (localeProvider == null) {
+            throw new IllegalArgumentException(String.format("Locale provider for %s not exists", entity.getClass()));
         }
 
-        Map<String, MessageConfiguration> messagesConfiguration = new HashMap<>();
-        this.defaultConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
-            okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
-            okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
-            okaeriConfig.withBindFile(new File(langDirectory, "en_US.yml"));
-            okaeriConfig.saveDefaults();
-            okaeriConfig.load();
-        });
+        Locale locale = localeProvider.getLocale(entity);
+        if (locale == null) {
+            return this.getDefaultLocale();
+        }
 
-        try (Stream<Path> files = Files.walk(langDirectory.toPath())
-            .filter(Files::isReadable)
-            .filter(Files::isRegularFile)) {
-            files.forEach(path -> {
-                String locale = FilenameUtils.removeExtension(path.getFileName().toString()).toLowerCase();
-                MessageConfiguration messageConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
-                    okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
-                    okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
-                    okaeriConfig.withBindFile(path);
-                    okaeriConfig.saveDefaults();
-                    okaeriConfig.load();
-                });
+        return locale;
+    }
 
-                messagesConfiguration.put(locale, messageConfiguration);
+    private Locale getDefaultLocale() {
+        return DEFAULT_LOCALE;
+    }
+
+    public void load() {
+        if (!this.messageConfigurations.containsKey(this.getDefaultLocale())) {
+            MessageConfiguration messageConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
+                okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
+                okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
+                okaeriConfig.withBindFile(new File(this.langDirectory, this.getDefaultLocale() + ".yml"));
+                okaeriConfig.saveDefaults();
+                okaeriConfig.load();
             });
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
 
-        return messagesConfiguration;
+            this.messageConfigurations.put(this.getDefaultLocale(), messageConfiguration);
+        }
     }
 
-    public MessageConfiguration getMessageConfiguration(Player player) {
-        return this.messagesConfiguration.getOrDefault(player.getLocale().toLowerCase(), this.defaultConfiguration);
+    public <E> void registerLocaleProvider(LocaleProvider<E> localeProvider) {
+        this.localeProviders.add(localeProvider);
+    }
+
+    public void registerConfiguration(Locale locale, MessageConfiguration messageConfiguration) {
+        this.messageConfigurations.put(locale, messageConfiguration);
+    }
+
+    public <E> MessageConfiguration getMessageConfiguration(E entity) {
+        return this.messageConfigurations.getOrDefault(this.getLocale(entity), this.messageConfigurations.get(Locale.ENGLISH));
     }
 }

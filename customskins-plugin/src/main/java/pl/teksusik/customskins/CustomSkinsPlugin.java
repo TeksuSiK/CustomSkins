@@ -4,10 +4,14 @@ import co.aikar.commands.PaperCommandManager;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
+import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.configuration.i18n.MessageService;
+import pl.teksusik.customskins.configuration.i18n.providers.PlayerLocaleProvider;
 import pl.teksusik.customskins.libs.mineskin.MineskinClient;
 import pl.teksusik.customskins.nms.NmsAccessor;
 import pl.teksusik.customskins.nms.V1_12;
@@ -28,17 +32,22 @@ import pl.teksusik.customskins.util.ReflectionHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 public class CustomSkinsPlugin extends JavaPlugin {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
     private PluginConfiguration pluginConfiguration;
+    private MessageService messageService;
 
     private SkinService skinService;
 
     @Override
     public void onEnable() {
         this.pluginConfiguration = this.loadPluginConfiguration();
-        MessageService messageService = new MessageService(this);
+        this.messageService = this.loadMessageService();
 
         Storage storage = this.loadStorage();
         NmsAccessor nmsAccessor = this.prepareNmsAccessor();
@@ -60,6 +69,37 @@ public class CustomSkinsPlugin extends JavaPlugin {
             okaeriConfig.saveDefaults();
             okaeriConfig.load();
         });
+    }
+
+    private MessageService loadMessageService() {
+        File langDirectory = new File(this.getDataFolder(), "lang");
+        if (!langDirectory.exists()) {
+            langDirectory.mkdir();
+        }
+
+        MessageService messageService = new MessageService(langDirectory);
+        messageService.registerLocaleProvider(new PlayerLocaleProvider());
+        try (Stream<Path> files = Files.walk(langDirectory.toPath())
+            .filter(Files::isReadable)
+            .filter(Files::isRegularFile)) {
+            files.forEach(path -> {
+                Locale locale = Locale.forLanguageTag(FilenameUtils.removeExtension(path.getFileName().toString()));
+                MessageConfiguration messageConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
+                    okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
+                    okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
+                    okaeriConfig.withBindFile(path);
+                    okaeriConfig.saveDefaults();
+                    okaeriConfig.load();
+                });
+
+                messageService.registerConfiguration(locale, messageConfiguration);
+            });
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        messageService.load();
+
+        return messageService;
     }
 
     private Storage loadStorage() {
