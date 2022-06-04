@@ -11,7 +11,6 @@ import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.configuration.i18n.MessageService;
-import pl.teksusik.customskins.configuration.i18n.providers.PlayerLocaleProvider;
 import pl.teksusik.customskins.libs.mineskin.MineskinClient;
 import pl.teksusik.customskins.nms.NmsAccessor;
 import pl.teksusik.customskins.nms.V1_12;
@@ -78,7 +77,6 @@ public class CustomSkinsPlugin extends JavaPlugin {
         }
 
         MessageService messageService = new MessageService(langDirectory);
-        messageService.registerLocaleProvider(new PlayerLocaleProvider());
         try (Stream<Path> files = Files.walk(langDirectory.toPath())
             .filter(Files::isReadable)
             .filter(Files::isRegularFile)) {

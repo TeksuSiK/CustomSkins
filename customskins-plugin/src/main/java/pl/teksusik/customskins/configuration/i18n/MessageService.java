@@ -3,18 +3,16 @@ package pl.teksusik.customskins.configuration.i18n;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.Player;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class MessageService {
-    private final List<LocaleProvider<?>> localeProviders = new ArrayList<>();
     private final Map<Locale, MessageConfiguration> messageConfigurations = new HashMap<>();
     private final File langDirectory;
 
@@ -22,27 +20,6 @@ public class MessageService {
 
     public MessageService(File langDirectory) {
         this.langDirectory = langDirectory;
-    }
-
-    private LocaleProvider getLocaleProvider(Class<?> entityType) {
-        return this.localeProviders.stream()
-            .filter(provider -> provider.supports(entityType))
-            .findAny()
-            .orElse(null);
-    }
-
-    private Locale getLocale(Object entity) {
-        LocaleProvider localeProvider = this.getLocaleProvider(entity.getClass());
-        if (localeProvider == null) {
-            throw new IllegalArgumentException(String.format("Locale provider for %s not exists", entity.getClass()));
-        }
-
-        Locale locale = localeProvider.getLocale(entity);
-        if (locale == null) {
-            return this.getDefaultLocale();
-        }
-
-        return locale;
     }
 
     private Locale getDefaultLocale() {
@@ -63,15 +40,18 @@ public class MessageService {
         }
     }
 
-    public <E> void registerLocaleProvider(LocaleProvider<E> localeProvider) {
-        this.localeProviders.add(localeProvider);
-    }
-
     public void registerConfiguration(Locale locale, MessageConfiguration messageConfiguration) {
         this.messageConfigurations.put(locale, messageConfiguration);
     }
 
-    public <E> MessageConfiguration getMessageConfiguration(E entity) {
+    public <E> MessageConfiguration getMessageConfiguration(Player entity) {
         return this.messageConfigurations.getOrDefault(this.getLocale(entity), this.messageConfigurations.get(Locale.ENGLISH));
+    }
+
+    private Locale getLocale(Player entity) {
+        String locale = entity.getLocale();
+        locale = locale.replace("_", "-");
+
+        return Locale.forLanguageTag(locale);
     }
 }
