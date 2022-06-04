@@ -44,7 +44,7 @@ public class MessageService {
         this.messageConfigurations.put(locale, messageConfiguration);
     }
 
-    public <E> MessageConfiguration getMessageConfiguration(Player entity) {
+    public MessageConfiguration getMessageConfiguration(Player entity) {
         return this.messageConfigurations.getOrDefault(this.getLocale(entity), this.messageConfigurations.get(Locale.ENGLISH));
     }
 
