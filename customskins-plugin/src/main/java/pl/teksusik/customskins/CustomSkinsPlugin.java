@@ -1,17 +1,21 @@
 package pl.teksusik.customskins;
 
 import co.aikar.commands.PaperCommandManager;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.configuration.i18n.MessageService;
-import pl.teksusik.customskins.libs.mineskin.MineskinClient;
 import pl.teksusik.customskins.nms.NmsAccessor;
 import pl.teksusik.customskins.nms.V1_12;
 import pl.teksusik.customskins.nms.V1_13;
@@ -36,25 +40,20 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-public class CustomSkinsPlugin extends JavaPlugin {
+public class CustomSkinsPlugin extends JavaPlugin implements Module {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
     private PluginConfiguration pluginConfiguration;
-    private MessageService messageService;
 
-    private SkinService skinService;
+    private Injector injector;
 
     @Override
     public void onEnable() {
-        this.pluginConfiguration = this.loadPluginConfiguration();
-        this.messageService = this.loadMessageService();
+        this.injector = Guice.createInjector(this);
 
-        Storage storage = this.loadStorage();
-        NmsAccessor nmsAccessor = this.prepareNmsAccessor();
-        this.skinService = new SkinService(this, storage, nmsAccessor, new MineskinClient("CustomSkins"));
+        SkinService skinService = injector.getInstance(SkinService.class);
 
-        BukkitAudiences adventure = BukkitAudiences.create(this);
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
-        paperCommandManager.registerCommand(new SkinCommand(messageService, storage, skinService, adventure));
+        paperCommandManager.registerCommand(injector.getInstance(SkinCommand.class));
     }
 
     @Override
@@ -146,7 +145,7 @@ public class CustomSkinsPlugin extends JavaPlugin {
                 return new V1_16();
             case "v1_17_R1":
                 return new V1_17();
-            case "v1_18_R1":
+            case "v1_18_R2":
                 return new V1_18();
             default:
                 throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
@@ -154,7 +153,14 @@ public class CustomSkinsPlugin extends JavaPlugin {
         }
     }
 
-    public SkinService getSkinService() {
-        return skinService;
+    @Override
+    public void configure(Binder binder) {
+        binder.bind(CustomSkinsPlugin.class).toInstance(this);
+        binder.bind(Logger.class).toInstance(this.getSLF4JLogger());
+        binder.bind(NmsAccessor.class).toInstance(this.prepareNmsAccessor());
+        binder.bind(PluginConfiguration.class).toInstance(this.loadPluginConfiguration());
+        binder.bind(MessageService.class).toInstance(this.loadMessageService());
+        binder.bind(Storage.class).toInstance(this.loadStorage());
+        binder.bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this));
     }
 }

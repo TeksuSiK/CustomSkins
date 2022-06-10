@@ -17,6 +17,7 @@ tasks.named<ShadowJar>("shadowJar") {
 
     relocate("org.jsoup", "pl.teksusik.customskins.libs.org.jsoup")
     relocate("org.apache", "pl.teksusik.customskins.libs.org.apache")
+    relocate("com.google", "pl.teksusik.customskins.libs.com.google")
 }
 
 dependencies {
@@ -44,4 +45,6 @@ dependencies {
 
     implementation("org.jsoup:jsoup:1.15.1")
     implementation("commons-io:commons-io:2.11.0")
+    implementation("com.google.inject:guice:5.1.0")
+    implementation("com.google.code.gson:gson:2.9.0")
 }

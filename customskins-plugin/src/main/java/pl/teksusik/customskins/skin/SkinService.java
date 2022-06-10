@@ -1,5 +1,6 @@
 package pl.teksusik.customskins.skin;
 
+import com.google.inject.Inject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -18,17 +19,14 @@ import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 
 public class SkinService {
-    private final CustomSkinsPlugin plugin;
-    private final Storage storage;
-    private final NmsAccessor nmsAccessor;
-    private final MineskinClient mineskinClient;
-
-    public SkinService(CustomSkinsPlugin plugin, Storage storage, NmsAccessor nmsAccessor, MineskinClient mineskinClient) {
-        this.plugin = plugin;
-        this.storage = storage;
-        this.nmsAccessor = nmsAccessor;
-        this.mineskinClient = mineskinClient;
-    }
+    @Inject
+    private CustomSkinsPlugin plugin;
+    @Inject
+    private Storage storage;
+    @Inject
+    private NmsAccessor nmsAccessor;
+    @Inject
+    private MineskinClient mineskinClient;
 
     private static final Method refreshPlayerMethod;
     private static final Method getHandleMethod;

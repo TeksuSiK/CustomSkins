@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -16,17 +17,14 @@ import pl.teksusik.customskins.storage.Storage;
 
 @CommandAlias("skin|skins|customskins")
 public class SkinCommand extends BaseCommand {
-    private final MessageService messageService;
-    private final Storage skinStorage;
-    private final SkinService skinService;
-    private final BukkitAudiences adventure;
-
-    public SkinCommand(MessageService messageService, Storage skinStorage, SkinService skinService, BukkitAudiences adventure) {
-        this.messageService = messageService;
-        this.skinStorage = skinStorage;
-        this.skinService = skinService;
-        this.adventure = adventure;
-    }
+    @Inject
+    private MessageService messageService;
+    @Inject
+    private Storage skinStorage;
+    @Inject
+    private SkinService skinService;
+    @Inject
+    private BukkitAudiences adventure;
 
     @Default
     public void onDefault(Player player) {
