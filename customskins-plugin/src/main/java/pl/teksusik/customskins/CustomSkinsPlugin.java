@@ -24,6 +24,7 @@ import pl.teksusik.customskins.nms.V1_15;
 import pl.teksusik.customskins.nms.V1_16;
 import pl.teksusik.customskins.nms.V1_17;
 import pl.teksusik.customskins.nms.V1_18;
+import pl.teksusik.customskins.nms.V1_19;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.skin.SkinService;
 import pl.teksusik.customskins.storage.Storage;
@@ -147,6 +148,8 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
                 return new V1_17();
             case "v1_18_R2":
                 return new V1_18();
+            case "v1_19_R1":
+                return new V1_19();
             default:
                 throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
                     ReflectionHelper.serverVersion));
