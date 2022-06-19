@@ -21,8 +21,9 @@ public class MongoStorage implements Storage {
 
     public MongoStorage(String host, int port, String database, String username, char[] password) {
         MongoCredential credential = MongoCredential.createCredential(username, database, password);
-        MongoClient client = new MongoClient(new ServerAddress(host, port), credential, MongoClientOptions.builder().build());
-        this.database = client.getDatabase(database);
+        try (MongoClient client = new MongoClient(new ServerAddress(host, port), credential, MongoClientOptions.builder().build())) {
+            this.database = client.getDatabase(database);
+        }
     }
 
     @Override
