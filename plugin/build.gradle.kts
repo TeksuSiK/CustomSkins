@@ -21,15 +21,15 @@ tasks.named<ShadowJar>("shadowJar") {
 }
 
 dependencies {
-    implementation(project(":customskins-nms"))
-    implementation(project(":V1_12"))
-    implementation(project(":V1_13"))
-    implementation(project(":V1_14"))
-    implementation(project(":V1_15"))
-    implementation(project(":V1_16"))
-    implementation(project(":V1_17"))
-    implementation(project(":V1_18"))
-    implementation(project(":V1_19"))
+    implementation(project(":nms:api"))
+    implementation(project(":nms:V1_12"))
+    implementation(project(":nms:V1_13"))
+    implementation(project(":nms:V1_14"))
+    implementation(project(":nms:V1_15"))
+    implementation(project(":nms:V1_16"))
+    implementation(project(":nms:V1_17"))
+    implementation(project(":nms:V1_18"))
+    implementation(project(":nms:V1_19"))
 
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")

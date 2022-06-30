@@ -1,2 +1,2 @@
 rootProject.name = "CustomSkins"
-include(":customskins-plugin", ":customskins-nms", ":V1_17", ":V1_16", ":V1_15", ":V1_14", ":V1_13", ":V1_12", ":V1_18", ":V1_19")
+include(":plugin", ":nms:api", ":nms:V1_12", ":nms:V1_13", ":nms:V1_14", ":nms:V1_15", ":nms:V1_16", ":nms:V1_17", ":nms:V1_18", ":nms:V1_19")
