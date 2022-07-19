@@ -11,4 +11,5 @@ public interface Storage {
     Collection<CustomSkin> getAllSkinsByOwner(UUID owner);
     CustomSkin insertSkin(CustomSkin skin);
     void deleteSkin(CustomSkin skin);
+    int countSkins();
 }

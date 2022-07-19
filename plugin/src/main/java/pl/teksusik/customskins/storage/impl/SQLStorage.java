@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SQLStorage implements Storage {
+public abstract class SQLStorage implements Storage {
     protected HikariDataSource hikariDataSource;
 
     public void createTableIfNotExists() {
@@ -83,5 +83,20 @@ public class SQLStorage implements Storage {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    @Override
+    public int countSkins() {
+        try (Connection connection = this.hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM customskins_skins");
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return 0;
     }
 }

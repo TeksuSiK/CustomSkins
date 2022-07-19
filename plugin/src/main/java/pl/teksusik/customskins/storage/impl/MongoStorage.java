@@ -75,4 +75,9 @@ public class MongoStorage implements Storage {
             Filters.eq("name", skin.getName()))
         );
     }
+
+    @Override
+    public int countSkins() {
+        return (int) this.database.getCollection("customskin").countDocuments();
+    }
 }
