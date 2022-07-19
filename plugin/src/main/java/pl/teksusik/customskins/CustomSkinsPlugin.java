@@ -10,6 +10,7 @@ import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.io.FilenameUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
@@ -55,6 +56,8 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
 
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
         paperCommandManager.registerCommand(injector.getInstance(SkinCommand.class));
+
+       new Metrics(this, 15828);
     }
 
     @Override

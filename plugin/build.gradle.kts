@@ -18,6 +18,8 @@ tasks.named<ShadowJar>("shadowJar") {
     relocate("org.jsoup", "pl.teksusik.customskins.libs.org.jsoup")
     relocate("org.apache", "pl.teksusik.customskins.libs.org.apache")
     relocate("com.google", "pl.teksusik.customskins.libs.com.google")
+
+    relocate("org.bstats", "pl.teksusik.customskins.libs.org.bstats")
 }
 
 dependencies {
@@ -48,4 +50,6 @@ dependencies {
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.google.inject:guice:5.1.0")
     implementation("com.google.code.gson:gson:2.9.0")
+
+    implementation("org.bstats:bstats-bukkit:3.0.0")
 }
