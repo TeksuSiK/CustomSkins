@@ -11,6 +11,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.io.FilenameUtils;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mineskin.MineskinClient;
@@ -65,6 +66,7 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
 
         Metrics metrics = new Metrics(this, 15828);
         metrics.addCustomChart(new SingleLineChart("skins", () -> skinStorage.countSkins()));
+        metrics.addCustomChart(new SimplePie("storage_type", () -> pluginConfiguration.getStorageType().toString()));
     }
 
     @Override
