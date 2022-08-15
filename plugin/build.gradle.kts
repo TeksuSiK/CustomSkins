@@ -38,7 +38,7 @@ dependencies {
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
-    implementation("eu.okaeri:okaeri-configs-yaml-bukkit:4.0.5")
+    implementation("eu.okaeri:okaeri-configs-yaml-bukkit:4.0.6")
 
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.mongodb:mongo-java-driver:3.12.11")
@@ -46,10 +46,10 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.1")
 
-    implementation("org.jsoup:jsoup:1.15.1")
+    implementation("org.jsoup:jsoup:1.15.2")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.google.inject:guice:5.1.0")
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.9.1")
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 }
