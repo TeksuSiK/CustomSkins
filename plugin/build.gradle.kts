@@ -46,6 +46,7 @@ dependencies {
 
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.mongodb:mongodb-driver-sync:4.7.1")
+    implementation("org.postgresql:postgresql:42.4.1")
 
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.1")

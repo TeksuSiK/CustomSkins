@@ -19,7 +19,7 @@ public abstract class SQLStorage implements Storage {
 
     public void createTableIfNotExists() {
         try (final Connection connection = this.hikariDataSource.getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `customskins_skins` (`owner` varchar(36) NOT NULL, `name` varchar(51) NOT NULL, `texture` longtext NOT NULL, `signature` longtext NOT NULL);")) {
+             final PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_skins (owner varchar(36) NOT NULL, name varchar(51) NOT NULL, texture longtext NOT NULL, signature longtext NOT NULL);")) {
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();

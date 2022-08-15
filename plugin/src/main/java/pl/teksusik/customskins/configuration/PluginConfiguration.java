@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class PluginConfiguration extends OkaeriConfig {
-    @Comment("Choose type of data storage for plugin (MYSQL, SQLITE, MONGODB)")
+    @Comment("Choose type of data storage for plugin (MYSQL, POSTGRESQL, SQLITE, MONGODB)")
     private StorageType storageType = StorageType.MYSQL;
     @Comment("Database connection data")
     private String host = "0.0.0.0";

@@ -35,6 +35,7 @@ import pl.teksusik.customskins.storage.Storage;
 import pl.teksusik.customskins.storage.StorageType;
 import pl.teksusik.customskins.storage.impl.MongoStorage;
 import pl.teksusik.customskins.storage.impl.MySQLStorage;
+import pl.teksusik.customskins.storage.impl.PostgreSQLStorage;
 import pl.teksusik.customskins.storage.impl.SQLiteStorage;
 import pl.teksusik.customskins.util.ReflectionHelper;
 
@@ -127,6 +128,12 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         switch (this.pluginConfiguration.getStorageType()) {
             case MYSQL:
                 return new MySQLStorage(this.pluginConfiguration.getHost(),
+                    this.pluginConfiguration.getPort(),
+                    this.pluginConfiguration.getDatabase(),
+                    this.pluginConfiguration.getUsername(),
+                    this.pluginConfiguration.getPassword());
+            case POSTGRESQL:
+                return new PostgreSQLStorage(this.pluginConfiguration.getHost(),
                     this.pluginConfiguration.getPort(),
                     this.pluginConfiguration.getDatabase(),
                     this.pluginConfiguration.getUsername(),
