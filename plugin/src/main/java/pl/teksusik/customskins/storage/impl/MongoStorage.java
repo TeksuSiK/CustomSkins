@@ -1,10 +1,10 @@
 package pl.teksusik.customskins.storage.impl;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.ConnectionString;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
@@ -17,18 +17,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class MongoStorage implements Storage {
-    private final MongoDatabase database;
+    private final MongoCollection<Document> collection;
 
-    public MongoStorage(String host, int port, String database, String username, char[] password) {
-        MongoCredential credential = MongoCredential.createCredential(username, database, password);
-        try (MongoClient client = new MongoClient(new ServerAddress(host, port), credential, MongoClientOptions.builder().build())) {
-            this.database = client.getDatabase(database);
-        }
+    public MongoStorage(String host, int port, String databaseName, String username, String password) {
+        ConnectionString mongoUri = new ConnectionString(String.format("mongodb://%s:%s@%s:%s", username, password, host, port));
+        MongoClient client = MongoClients.create(mongoUri);
+        MongoDatabase database = client.getDatabase(databaseName);
+
+        this.collection = database.getCollection("customskin");
     }
 
     @Override
     public Optional<CustomSkin> findSkin(UUID owner, String name) {
-        Document document = this.database.getCollection("customskin").find(Filters.and(
+        Document document = this.collection.find(Filters.and(
             Filters.eq("owner", owner),
             Filters.eq("name", name))
         ).first();
@@ -45,7 +46,7 @@ public class MongoStorage implements Storage {
 
     @Override
     public Collection<CustomSkin> getAllSkinsByOwner(UUID owner) {
-        FindIterable<Document> iterable = this.database.getCollection("customskin").find(Filters.eq("owner", owner));
+        FindIterable<Document> iterable = this.collection.find(Filters.eq("owner", owner));
         Collection<CustomSkin> skins = new HashSet<>();
         for (Document document : iterable) {
             CustomSkin customSkin = new CustomSkin(document.get("owner", UUID.class),
@@ -64,13 +65,13 @@ public class MongoStorage implements Storage {
             .append("name", skin.getName())
             .append("texture", skin.getTexture())
             .append("signature", skin.getSignature());
-        this.database.getCollection("customskin").insertOne(document);
+        this.collection.insertOne(document);
         return skin;
     }
 
     @Override
     public void deleteSkin(CustomSkin skin) {
-        this.database.getCollection("customskin").deleteOne(Filters.and(
+        this.collection.deleteOne(Filters.and(
             Filters.eq("owner", skin.getOwner()),
             Filters.eq("name", skin.getName()))
         );
@@ -78,6 +79,6 @@ public class MongoStorage implements Storage {
 
     @Override
     public int countSkins() {
-        return (int) this.database.getCollection("customskin").countDocuments();
+        return (int) this.collection.countDocuments();
     }
 }
