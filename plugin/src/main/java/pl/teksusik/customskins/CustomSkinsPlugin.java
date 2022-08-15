@@ -13,6 +13,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mineskin.MineskinClient;
 import org.slf4j.Logger;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
@@ -131,7 +132,7 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
                     this.pluginConfiguration.getPort(),
                     this.pluginConfiguration.getDatabase(),
                     this.pluginConfiguration.getUsername(),
-                    this.pluginConfiguration.getPassword().toCharArray());
+                    this.pluginConfiguration.getPassword());
             default:
                 throw new IllegalArgumentException("The storage type you entered is invalid");
         }
@@ -170,5 +171,6 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         binder.bind(MessageService.class).toInstance(this.loadMessageService());
         binder.bind(Storage.class).toInstance(this.loadStorage());
         binder.bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this));
+        binder.bind(MineskinClient.class).toInstance(new MineskinClient("CustomSkins"));
     }
 }

@@ -5,6 +5,8 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.named<ShadowJar>("shadowJar") {
+    relocate("org.mineskin", "pl.teksusik.customskins.libs.org.mineskin")
+
     relocate("co.aikar.commands", "pl.teksusik.customskins.libs.acf")
     relocate("co.aikar.locales", "pl.teksusik.customskins.libs.locales")
 
@@ -35,6 +37,8 @@ dependencies {
 
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")
+
+    implementation("org.mineskin:java-client:1.2.0-SNAPSHOT")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 

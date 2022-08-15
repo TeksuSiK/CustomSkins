@@ -9,10 +9,10 @@ import com.google.inject.Inject;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.mineskin.SkinOptions;
+import org.mineskin.Variant;
+import org.mineskin.Visibility;
 import pl.teksusik.customskins.configuration.i18n.MessageService;
-import pl.teksusik.customskins.libs.mineskin.SkinOptions;
-import pl.teksusik.customskins.libs.mineskin.Variant;
-import pl.teksusik.customskins.libs.mineskin.Visibility;
 import pl.teksusik.customskins.storage.Storage;
 
 @CommandAlias("skin|skins|customskins")
