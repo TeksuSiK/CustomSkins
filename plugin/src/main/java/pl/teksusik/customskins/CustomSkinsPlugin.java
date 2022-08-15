@@ -48,19 +48,23 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
     private PluginConfiguration pluginConfiguration;
 
+    private Storage skinStorage;
+    private SkinService skinService;
+
     private Injector injector;
 
     @Override
     public void onEnable() {
         this.injector = Guice.createInjector(this);
 
-        SkinService skinService = injector.getInstance(SkinService.class);
+        this.skinStorage = injector.getInstance(Storage.class);
+        this.skinService = injector.getInstance(SkinService.class);
 
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
         paperCommandManager.registerCommand(injector.getInstance(SkinCommand.class));
 
         Metrics metrics = new Metrics(this, 15828);
-        metrics.addCustomChart(new SingleLineChart("skins", () -> injector.getInstance(Storage.class).countSkins()));
+        metrics.addCustomChart(new SingleLineChart("skins", () -> skinStorage.countSkins()));
     }
 
     @Override
@@ -172,5 +176,13 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         binder.bind(Storage.class).toInstance(this.loadStorage());
         binder.bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this));
         binder.bind(MineskinClient.class).toInstance(new MineskinClient("CustomSkins"));
+    }
+
+    public Storage getSkinStorage() {
+        return skinStorage;
+    }
+
+    public SkinService getSkinService() {
+        return skinService;
     }
 }
