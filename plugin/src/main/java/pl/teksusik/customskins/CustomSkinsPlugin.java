@@ -53,11 +53,9 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
     private Storage skinStorage;
     private SkinService skinService;
 
-    private Injector injector;
-
     @Override
     public void onEnable() {
-        this.injector = Guice.createInjector(this);
+        Injector injector = Guice.createInjector(this);
 
         this.skinStorage = injector.getInstance(Storage.class);
         this.skinService = injector.getInstance(SkinService.class);

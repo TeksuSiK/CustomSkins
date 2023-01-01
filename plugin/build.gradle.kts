@@ -38,23 +38,23 @@ dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")
 
-    implementation("org.mineskin:java-client:1.2.0-SNAPSHOT")
+    implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
-    implementation("eu.okaeri:okaeri-configs-yaml-bukkit:4.0.6")
+    implementation("eu.okaeri:okaeri-configs-yaml-bukkit:4.0.8")
 
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("org.mongodb:mongodb-driver-sync:4.7.1")
-    implementation("org.postgresql:postgresql:42.4.1")
+    implementation("org.mongodb:mongodb-driver-sync:4.8.1")
+    implementation("org.postgresql:postgresql:42.5.1")
 
-    implementation("net.kyori:adventure-text-minimessage:4.11.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.1.1")
+    implementation("net.kyori:adventure-text-minimessage:4.12.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.2.0")
 
-    implementation("org.jsoup:jsoup:1.15.2")
+    implementation("org.jsoup:jsoup:1.15.3")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.google.inject:guice:5.1.0")
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.google.code.gson:gson:2.10")
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 }
