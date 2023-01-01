@@ -1,5 +1,9 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
+plugins {
+    id("xyz.jpenilla.run-paper")
+}
+
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
 }
@@ -57,4 +61,10 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.19.3")
+    }
 }
