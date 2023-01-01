@@ -167,7 +167,7 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
                 return new V1_17();
             case "v1_18_R2":
                 return new V1_18();
-            case "v1_19_R1":
+            case "v1_19_R2":
                 return new V1_19();
             default:
                 throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
