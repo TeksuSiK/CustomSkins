@@ -20,15 +20,6 @@ import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.configuration.i18n.MessageService;
-import pl.teksusik.customskins.nms.NmsAccessor;
-import pl.teksusik.customskins.nms.V1_12;
-import pl.teksusik.customskins.nms.V1_13;
-import pl.teksusik.customskins.nms.V1_14;
-import pl.teksusik.customskins.nms.V1_15;
-import pl.teksusik.customskins.nms.V1_16;
-import pl.teksusik.customskins.nms.V1_17;
-import pl.teksusik.customskins.nms.V1_18;
-import pl.teksusik.customskins.nms.V1_19;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.skin.SkinService;
 import pl.teksusik.customskins.storage.Storage;
@@ -37,7 +28,6 @@ import pl.teksusik.customskins.storage.impl.MongoStorage;
 import pl.teksusik.customskins.storage.impl.MySQLStorage;
 import pl.teksusik.customskins.storage.impl.PostgreSQLStorage;
 import pl.teksusik.customskins.storage.impl.SQLiteStorage;
-import pl.teksusik.customskins.util.ReflectionHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,35 +139,10 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         }
     }
 
-    private NmsAccessor prepareNmsAccessor() {
-        switch (ReflectionHelper.serverVersion) {
-            case "v1_12_R1":
-                return new V1_12();
-            case "v1_13_R2":
-                return new V1_13();
-            case "v1_14_R1":
-                return new V1_14();
-            case "v1_15_R1":
-                return new V1_15();
-            case "v1_16_R3":
-                return new V1_16();
-            case "v1_17_R1":
-                return new V1_17();
-            case "v1_18_R2":
-                return new V1_18();
-            case "v1_19_R2":
-                return new V1_19();
-            default:
-                throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
-                    ReflectionHelper.serverVersion));
-        }
-    }
-
     @Override
     public void configure(Binder binder) {
         binder.bind(CustomSkinsPlugin.class).toInstance(this);
         binder.bind(Logger.class).toInstance(this.getSLF4JLogger());
-        binder.bind(NmsAccessor.class).toInstance(this.prepareNmsAccessor());
         binder.bind(PluginConfiguration.class).toInstance(this.loadPluginConfiguration());
         binder.bind(MessageService.class).toInstance(this.loadMessageService());
         binder.bind(Storage.class).toInstance(this.loadStorage());
