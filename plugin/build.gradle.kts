@@ -29,16 +29,6 @@ tasks.named<ShadowJar>("shadowJar") {
 }
 
 dependencies {
-    implementation(project(":nms:api"))
-    implementation(project(":nms:V1_12"))
-    implementation(project(":nms:V1_13"))
-    implementation(project(":nms:V1_14"))
-    implementation(project(":nms:V1_15"))
-    implementation(project(":nms:V1_16"))
-    implementation(project(":nms:V1_17"))
-    implementation(project(":nms:V1_18"))
-    implementation(project(":nms:V1_19"))
-
     compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")
 
@@ -55,7 +45,6 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.12.0")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")
 
-    implementation("org.jsoup:jsoup:1.15.3")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.google.inject:guice:5.1.0")
     implementation("com.google.code.gson:gson:2.10")
