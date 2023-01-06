@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "pl.teksusik"
-version = "1.3-RELEASE"
+version = "1.4-RELEASE"
 
 apply(plugin = "java")
 apply(plugin = "com.github.johnrengelman.shadow")
