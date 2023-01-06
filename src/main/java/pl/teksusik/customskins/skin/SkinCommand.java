@@ -93,9 +93,4 @@ public class SkinCommand extends BaseCommand {
             this.adventure.player(player).sendMessage(this.messageService.getMessageConfiguration(player).getSkinDeleted());
         }, () -> this.adventure.player(player).sendMessage(this.messageService.getMessageConfiguration(player).getSkinNotExists()));
     }
-
-    @Subcommand("version")
-    public void onVersion(Player player) {
-        this.adventure.player(player).sendMessage(Component.text("CustomSkins 1.3-RELEASE by teksusik."));
-    }
 }

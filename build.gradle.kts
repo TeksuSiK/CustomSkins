@@ -87,3 +87,9 @@ tasks {
         minecraftVersion("1.19.3")
     }
 }
+
+tasks.processResources {
+    expand(
+            "customSkinsVersion" to version,
+    )
+}
