@@ -3,6 +3,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     idea
     java
+    `java-library`
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
@@ -11,6 +13,8 @@ group = "pl.teksusik"
 version = "1.4-RELEASE"
 
 apply(plugin = "java")
+apply(plugin = "java-library")
+apply(plugin = "maven-publish")
 apply(plugin = "com.github.johnrengelman.shadow")
 
 java {
@@ -93,3 +97,37 @@ tasks.processResources {
             "customSkinsVersion" to version,
     )
 }
+
+publishing {
+    repositories {
+        maven {
+            name = "teksusik"
+            url = uri("https://repo.teksusik.pl/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                password = System.getenv("MAVEN_TOKEN")
+            }
+        }
+    }
+
+    publications {
+        create<MavenPublication>("library") {
+            from(components.getByName("java"))
+
+            // https://github.com/FunnyGuilds/FunnyGuilds/blob/master/build.gradle
+            // Add external repositories to published artifacts
+            // ~ btw: pls don't touch this
+            pom.withXml {
+                val repositories = asNode().appendNode("repositories")
+                project.repositories.findAll(closureOf<Any> {
+                    if (this is MavenArtifactRepository && this.url.toString().startsWith("https")) {
+                        val repository = repositories.appendNode("repository")
+                        repository.appendNode("id", this.url.toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
+                        repository.appendNode("url", this.url.toString().trim())
+                    }
+                })
+            }
+        }
+    }
+}
+
