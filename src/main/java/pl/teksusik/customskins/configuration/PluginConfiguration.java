@@ -5,7 +5,7 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
-import pl.teksusik.customskins.i18n.locale.LocaleProviderTypes;
+import pl.teksusik.customskins.i18n.locale.LocaleProviderType;
 import pl.teksusik.customskins.storage.StorageType;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
@@ -21,7 +21,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("SQLite file name")
     private String sqliteFile = "customskins.db";
     @Comment("Choose locale provider for messages (FIXED, PLAYER)")
-    private LocaleProviderTypes localeProvider = LocaleProviderTypes.PLAYER;
+    private LocaleProviderType localeProvider = LocaleProviderType.PLAYER;
     @Comment("Choose messages language. Only applicable if locale-provider is set to FIXED")
     private String locale = "en";
 
@@ -53,7 +53,7 @@ public class PluginConfiguration extends OkaeriConfig {
         return sqliteFile;
     }
 
-    public LocaleProviderTypes getLocaleProvider() {
+    public LocaleProviderType getLocaleProvider() {
         return localeProvider;
     }
 

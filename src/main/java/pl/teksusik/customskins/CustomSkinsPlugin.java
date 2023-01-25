@@ -20,7 +20,7 @@ import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.i18n.BI18n;
 import pl.teksusik.customskins.i18n.locale.FixedLocaleProvider;
-import pl.teksusik.customskins.i18n.locale.LocaleProviderTypes;
+import pl.teksusik.customskins.i18n.locale.LocaleProviderType;
 import pl.teksusik.customskins.i18n.locale.PlayerLocaleProvider;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.skin.SkinService;
@@ -87,9 +87,9 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
 
         i18n.setDefaultLocale(defaultLocale);
 
-        if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderTypes.PLAYER) {
+        if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.PLAYER) {
             i18n.registerLocaleProvider(new PlayerLocaleProvider(defaultLocale));
-        } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderTypes.FIXED) {
+        } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.FIXED) {
             i18n.registerLocaleProvider(new FixedLocaleProvider(defaultLocale));
         }
 
