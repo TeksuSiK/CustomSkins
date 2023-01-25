@@ -40,7 +40,9 @@ dependencies {
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
-    implementation("eu.okaeri:okaeri-configs-yaml-bukkit:4.0.8")
+    implementation("eu.okaeri:okaeri-configs-yaml-bukkit:5.0.0-beta.2")
+    implementation("eu.okaeri:okaeri-i18n-configs:5.0.1-beta.4")
+    implementation("eu.okaeri:okaeri-i18n-minecraft-adventure:5.0.1-beta.4")
 
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.mongodb:mongodb-driver-sync:4.8.1")
