@@ -1,93 +1,69 @@
 package pl.teksusik.customskins.configuration;
 
-import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import pl.teksusik.customskins.storage.StorageType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import eu.okaeri.i18n.configs.LocaleConfig;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
-public class MessageConfiguration extends OkaeriConfig {
-    @Exclude
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
-
+public class MessageConfiguration extends LocaleConfig {
     @Comment("Messages configuration")
-    @Comment("Help commands")
-    private List<Component> helpCommands = new ArrayList<>() {
-        {
-            this.add(miniMessage.deserialize("<yellow>CustomSkins help:"));
-            this.add(miniMessage.deserialize("<green>- <reset>/skins list <gold>- <reset>Shows off skin list"));
-            this.add(miniMessage.deserialize("<green>- <reset>/skins wear <name> <gold>- <reset>Dresses up skin from list"));
-            this.add(miniMessage.deserialize("<green>- <reset>/skins add <name> <URL> <Model> <gold>- <reset>Creates skin from URL"));
-            this.add(miniMessage.deserialize("<green>- <reset>/skins delete <name> <gold>- <reset>Removes skin from list"));
-            this.add(miniMessage.deserialize("<green>- <reset>/skins version <gold>- <reset>CustomSkins info"));
-        }
-    };
+    private String helpCommands = "<yellow>CustomSkins help:" +
+        "\n<green>- <reset>/skins list <gold>- <reset>Shows off skin list" +
+        "\n<green>- <reset>/skins wear <name> <gold>- <reset>Dresses up skin from list" +
+        "\n<green>- <reset>/skins add <name> <URL> <Model> <gold>- <reset>Creates skin from URL" +
+        "\n<green>- <reset>/skins delete <name> <gold>- <reset>Removes skin from list";
     @Comment("Skins available message")
-    private Component skinsAvailable = this.miniMessage.deserialize("<green>Skins available:");
+    private String skinsAvailable = "<green>Skins available: <reset>{skins}";
     @Comment("Skin not exists message")
-    private Component skinNotExists = this.miniMessage.deserialize("<dark_red>Error: <red>Skin with provided name does not exists");
+    private String skinNotExists = "<dark_red>Error: <red>Skin named <reset>{skin} <red>does not exists";
     @Comment("Skin changed message")
-    private Component skinChanged = this.miniMessage.deserialize("<green>You successfully changed your skin");
+    private String skinChanged = "<green>You successfully changed your skin to <reset>{skin}";
     @Comment("Skin deleted message")
-    private Component skinDeleted = this.miniMessage.deserialize("<green>You successfully deleted your skin");
+    private String skinDeleted = "<green>You successfully deleted <reset>{skin} <green>skin";
     @Comment("Invalid model message")
-    private Component invalidModel = this.miniMessage.deserialize("<dark_red>Error: <red>Model you provided does not exists. Valid models: DEFAULT, SLIM");
+    private String invalidModel = "<dark_red>Error: <red>Model <reset>{model} <red>does not exists. Valid models: DEFAULT, SLIM";
     @Comment("Skin already exists")
-    private Component skinAlreadyExists = this.miniMessage.deserialize("<dark_red>Error: <red>Skin with provided name already exists");
+    private String skinAlreadyExists = "<dark_red>Error: <red>Skin named <reset>{skin} <red>already exists";
     @Comment("Bad usage message")
-    private Component badUsage = this.miniMessage.deserialize("<dark_red>Error: <red>Incorrect usage. Correct usage: /skins help");
+    private String badUsage = "<dark_red>Error: <red>Incorrect usage. Check correct usage: <reset>/skins";
     @Comment("Upload skin message")
-    private Component skinUploaded = this.miniMessage.deserialize("<green>You successfully uploaded your skin");
+    private String skinUploaded = "<green>You successfully uploaded <reset>{skin} <green>skin";
 
-    public List<Component> getHelpCommands() {
+    public String getHelpCommands() {
         return helpCommands;
     }
 
-    public Component getSkinsAvailable() {
+    public String getSkinsAvailable() {
         return skinsAvailable;
     }
 
-    public Component getSkinNotExists() {
+    public String getSkinNotExists() {
         return skinNotExists;
     }
 
-    public Component getSkinChanged() {
+    public String getSkinChanged() {
         return skinChanged;
     }
 
-    public Component getSkinDeleted() {
+    public String getSkinDeleted() {
         return skinDeleted;
     }
 
-    public Component getInvalidModel() {
+    public String getInvalidModel() {
         return invalidModel;
     }
 
-    public Component getSkinAlreadyExists() {
+    public String getSkinAlreadyExists() {
         return skinAlreadyExists;
     }
 
-    public Component getBadUsage() {
+    public String getBadUsage() {
         return badUsage;
     }
 
-    public Component getSkinUploaded() {
+    public String getSkinUploaded() {
         return skinUploaded;
-    }
-
-    @Exclude
-    public static final Pattern LEGACY_COLOR_CODE_PATTERN = Pattern.compile("&([0-9A-Fa-fK-Ok-oRXrx][^&]*)");
-
-    public static boolean containsLegacyColors(String string) {
-        return LEGACY_COLOR_CODE_PATTERN.matcher(string).find();
     }
 }

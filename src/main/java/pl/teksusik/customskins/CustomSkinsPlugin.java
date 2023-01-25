@@ -7,8 +7,10 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
+import eu.okaeri.i18n.configs.LocaleConfigManager;
+import eu.okaeri.placeholders.PlaceholderPack;
+import eu.okaeri.placeholders.Placeholders;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.io.FilenameUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -17,9 +19,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mineskin.MineskinClient;
 import org.slf4j.Logger;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
-import pl.teksusik.customskins.configuration.MiniMessageTransformer;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
-import pl.teksusik.customskins.configuration.i18n.MessageService;
+import pl.teksusik.customskins.i18n.BI18n;
+import pl.teksusik.customskins.i18n.locale.FixedLocaleProvider;
+import pl.teksusik.customskins.i18n.locale.LocaleProviderTypes;
+import pl.teksusik.customskins.i18n.locale.PlayerLocaleProvider;
+import pl.teksusik.customskins.skin.CustomSkin;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.skin.SkinService;
 import pl.teksusik.customskins.storage.Storage;
@@ -33,12 +38,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Stream;
 
 public class CustomSkinsPlugin extends JavaPlugin implements Module {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
     private PluginConfiguration pluginConfiguration;
+    private final File langDirectory = new File(getDataFolder(), "lang");
 
     private Storage skinStorage;
     private SkinService skinService;
@@ -67,38 +74,61 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
             okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
             okaeriConfig.withBindFile(this.pluginConfigurationFile);
             okaeriConfig.saveDefaults();
-            okaeriConfig.load();
+            okaeriConfig.load(true);
         });
     }
 
-    private MessageService loadMessageService() {
-        File langDirectory = new File(this.getDataFolder(), "lang");
-        if (!langDirectory.exists()) {
-            langDirectory.mkdir();
+    public MessageConfiguration loadMessageConfiguration() {
+        return LocaleConfigManager.createTemplate(MessageConfiguration.class);
+    }
+
+    private BI18n loadI18n() {
+        BI18n i18n = new BI18n();
+        Locale defaultLocale = Locale.forLanguageTag(this.pluginConfiguration.getLocale());
+        if (defaultLocale == null) {
+            defaultLocale = Locale.ENGLISH;
         }
 
-        MessageService messageService = new MessageService(langDirectory);
-        try (Stream<Path> files = Files.walk(langDirectory.toPath())
+        i18n.setDefaultLocale(defaultLocale);
+
+        if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderTypes.PLAYER) {
+            i18n.registerLocaleProvider(new PlayerLocaleProvider(i18n.getDefaultLocale()));
+        } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderTypes.FIXED) {
+            i18n.registerLocaleProvider(new FixedLocaleProvider(defaultLocale));
+        }
+
+        if (!this.langDirectory.exists()) {
+            this.langDirectory.mkdir();
+        }
+
+        try (Stream<Path> files = Files.walk(this.langDirectory.toPath())
             .filter(Files::isReadable)
             .filter(Files::isRegularFile)) {
             files.forEach(path -> {
                 Locale locale = Locale.forLanguageTag(FilenameUtils.removeExtension(path.getFileName().toString()));
                 MessageConfiguration messageConfiguration = ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
                     okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
-                    okaeriConfig.withSerdesPack(registry -> registry.register(new MiniMessageTransformer(MiniMessage.miniMessage())));
                     okaeriConfig.withBindFile(path);
                     okaeriConfig.saveDefaults();
                     okaeriConfig.load();
                 });
 
-                messageService.registerConfiguration(locale, messageConfiguration);
+                i18n.registerConfig(locale, messageConfiguration);
             });
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        messageService.load();
 
-        return messageService;
+        if (i18n.getConfigs().get(i18n.getDefaultLocale()) == null) {
+            i18n.registerConfig(i18n.getDefaultLocale(), ConfigManager.create(MessageConfiguration.class, okaeriConfig -> {
+                okaeriConfig.withConfigurer(new YamlBukkitConfigurer());
+                okaeriConfig.withBindFile(new File(this.langDirectory, i18n.getDefaultLocale() + ".yml"));
+                okaeriConfig.saveDefaults();
+                okaeriConfig.load();
+            }));
+        }
+
+        return i18n;
     }
 
     private Storage loadStorage() {
@@ -144,7 +174,8 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         binder.bind(CustomSkinsPlugin.class).toInstance(this);
         binder.bind(Logger.class).toInstance(this.getSLF4JLogger());
         binder.bind(PluginConfiguration.class).toInstance(this.loadPluginConfiguration());
-        binder.bind(MessageService.class).toInstance(this.loadMessageService());
+        binder.bind(MessageConfiguration.class).toInstance(this.loadMessageConfiguration());
+        binder.bind(BI18n.class).toInstance(this.loadI18n());
         binder.bind(Storage.class).toInstance(this.loadStorage());
         binder.bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this));
         binder.bind(MineskinClient.class).toInstance(new MineskinClient("CustomSkins"));

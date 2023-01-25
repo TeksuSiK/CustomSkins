@@ -2,13 +2,11 @@ package pl.teksusik.customskins.configuration;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
+import pl.teksusik.customskins.i18n.locale.LocaleProviderTypes;
 import pl.teksusik.customskins.storage.StorageType;
-
-import java.util.regex.Pattern;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class PluginConfiguration extends OkaeriConfig {
@@ -22,6 +20,10 @@ public class PluginConfiguration extends OkaeriConfig {
     private String password = "customskins";
     @Comment("SQLite file name")
     private String sqliteFile = "customskins.db";
+    @Comment("Choose locale provider for messages (FIXED, PLAYER)")
+    private LocaleProviderTypes localeProvider = LocaleProviderTypes.PLAYER;
+    @Comment("Choose messages language. Only applicable if locale-provider is set to FIXED")
+    private String locale = "en";
 
     public StorageType getStorageType() {
         return storageType;
@@ -51,10 +53,11 @@ public class PluginConfiguration extends OkaeriConfig {
         return sqliteFile;
     }
 
-    @Exclude
-    public static final Pattern LEGACY_COLOR_CODE_PATTERN = Pattern.compile("&([0-9A-Fa-fK-Ok-oRXrx][^&]*)");
+    public LocaleProviderTypes getLocaleProvider() {
+        return localeProvider;
+    }
 
-    public static boolean containsLegacyColors(String string) {
-        return LEGACY_COLOR_CODE_PATTERN.matcher(string).find();
+    public String getLocale() {
+        return locale;
     }
 }
