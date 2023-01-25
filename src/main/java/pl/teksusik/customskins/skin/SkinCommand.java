@@ -14,7 +14,6 @@ import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.i18n.BI18n;
 import pl.teksusik.customskins.storage.Storage;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 

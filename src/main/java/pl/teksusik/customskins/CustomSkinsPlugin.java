@@ -8,8 +8,6 @@ import com.google.inject.Module;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import eu.okaeri.i18n.configs.LocaleConfigManager;
-import eu.okaeri.placeholders.PlaceholderPack;
-import eu.okaeri.placeholders.Placeholders;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.io.FilenameUtils;
 import org.bstats.bukkit.Metrics;
@@ -24,7 +22,6 @@ import pl.teksusik.customskins.i18n.BI18n;
 import pl.teksusik.customskins.i18n.locale.FixedLocaleProvider;
 import pl.teksusik.customskins.i18n.locale.LocaleProviderTypes;
 import pl.teksusik.customskins.i18n.locale.PlayerLocaleProvider;
-import pl.teksusik.customskins.skin.CustomSkin;
 import pl.teksusik.customskins.skin.SkinCommand;
 import pl.teksusik.customskins.skin.SkinService;
 import pl.teksusik.customskins.storage.Storage;
@@ -38,7 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Stream;
 
@@ -92,7 +88,7 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         i18n.setDefaultLocale(defaultLocale);
 
         if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderTypes.PLAYER) {
-            i18n.registerLocaleProvider(new PlayerLocaleProvider(i18n.getDefaultLocale()));
+            i18n.registerLocaleProvider(new PlayerLocaleProvider(defaultLocale));
         } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderTypes.FIXED) {
             i18n.registerLocaleProvider(new FixedLocaleProvider(defaultLocale));
         }
