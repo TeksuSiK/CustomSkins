@@ -115,4 +115,9 @@ public class SkinCommand extends BaseCommand {
             .with("skin", args[0])
             .sendTo(player));
     }
+
+    @Subcommand("clear")
+    public void onClear(Player player) {
+        this.skinService.clearSkin(player);
+    }
 }

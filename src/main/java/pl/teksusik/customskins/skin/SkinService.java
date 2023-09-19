@@ -24,6 +24,12 @@ public class SkinService {
         player.setPlayerProfile(profile);
     }
 
+    public void clearSkin(Player player) {
+        PlayerProfile profile = player.getPlayerProfile();
+        profile.removeProperty("textures");
+        player.setPlayerProfile(profile);
+    }
+
     public CompletableFuture<Void> uploadSkin(Player player, String name, String url, SkinOptions skinOptions) {
         return this.mineskinClient.generateUrl(url, skinOptions).thenAcceptAsync(skin -> {
             CustomSkin generatedSkin = new CustomSkin(player.getUniqueId(), name, skin.data.texture.value, skin.data.texture.signature);
