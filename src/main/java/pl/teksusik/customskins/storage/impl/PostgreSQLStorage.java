@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class PostgreSQLStorage extends SQLStorage {
     public PostgreSQLStorage(String host, int port, String database, String username, String password) {
@@ -47,8 +48,10 @@ public class PostgreSQLStorage extends SQLStorage {
     @Override
     public void createTableIfNotExists() {
         try (final Connection connection = this.hikariDataSource.getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_skins (owner varchar(36) NOT NULL, name varchar(51) NOT NULL, texture text NOT NULL, signature text NOT NULL);")) {
-            preparedStatement.executeUpdate();
+             final PreparedStatement createSkinsTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_skins (owner varchar(36) NOT NULL, name varchar(51) NOT NULL, texture text NOT NULL, signature text NOT NULL);");
+             final PreparedStatement createI18nTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_i18n (owner varchar(36) NOT NULL PRIMARY KEY, locale VARCHAR(10));")) {
+            createSkinsTable.executeUpdate();
+            createI18nTable.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }

@@ -15,6 +15,7 @@ import pl.teksusik.customskins.i18n.BI18n;
 import pl.teksusik.customskins.storage.Storage;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @CommandAlias("skin|skins|customskins")
@@ -119,5 +120,32 @@ public class SkinCommand extends BaseCommand {
     @Subcommand("clear")
     public void onClear(Player player) {
         this.skinService.clearSkin(player);
+    }
+
+    @Subcommand("locale")
+    @Syntax("<locale>")
+    public void onLocale(Player player, String[] args) {
+        if (args.length != 1) {
+            String availableLocales = String.join(", ", this.i18n.getAvailableLocales());
+            this.i18n.get(this.messages.getAvailableLocales())
+                .with("locales", availableLocales)
+                .sendTo(player);
+            return;
+        }
+
+        Locale locale = Locale.forLanguageTag(args[0].replace("_", "-"));
+        if (locale == null || !(this.i18n.getConfigs().containsKey(locale))) {
+            String availableLocales = String.join(", ", this.i18n.getAvailableLocales());
+            this.i18n.get(this.messages.getInvalidLocale())
+                .with("locale", args[0])
+                .with("locales", availableLocales)
+                .sendTo(player);
+            return;
+        }
+
+        String newLocale = this.skinStorage.setLocale(player.getUniqueId(), locale.toLanguageTag());
+        this.i18n.get(this.messages.getLocaleChanged())
+            .with("locale", newLocale)
+            .sendTo(player);
     }
 }

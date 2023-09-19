@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class SQLiteStorage extends SQLStorage {
     public SQLiteStorage(File file) {

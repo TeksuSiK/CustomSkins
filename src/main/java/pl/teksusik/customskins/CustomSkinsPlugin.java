@@ -5,6 +5,8 @@ import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import eu.okaeri.i18n.configs.LocaleConfigManager;
@@ -19,6 +21,7 @@ import org.slf4j.Logger;
 import pl.teksusik.customskins.configuration.MessageConfiguration;
 import pl.teksusik.customskins.configuration.PluginConfiguration;
 import pl.teksusik.customskins.i18n.BI18n;
+import pl.teksusik.customskins.i18n.locale.PlayerChoiceLocaleProvider;
 import pl.teksusik.customskins.i18n.locale.FixedLocaleProvider;
 import pl.teksusik.customskins.i18n.locale.LocaleProviderType;
 import pl.teksusik.customskins.i18n.locale.PlayerLocaleProvider;
@@ -41,17 +44,21 @@ import java.util.stream.Stream;
 public class CustomSkinsPlugin extends JavaPlugin implements Module {
     private final File pluginConfigurationFile = new File(getDataFolder(), "config.yml");
     private PluginConfiguration pluginConfiguration;
+
     private final File langDirectory = new File(getDataFolder(), "lang");
 
     private Storage skinStorage;
     private SkinService skinService;
 
+    private Injector injector;
+
     @Override
     public void onEnable() {
-        Injector injector = Guice.createInjector(this);
+        this.injector = Guice.createInjector(this);
 
-        this.skinStorage = injector.getInstance(Storage.class);
-        this.skinService = injector.getInstance(SkinService.class);
+        this.registerLocaleProviders(this.injector.getInstance(BI18n.class));
+        this.skinStorage = this.injector.getInstance(Storage.class);
+        this.skinService = this.injector.getInstance(SkinService.class);
 
         PaperCommandManager paperCommandManager = new PaperCommandManager(this);
         paperCommandManager.registerCommand(injector.getInstance(SkinCommand.class));
@@ -80,18 +87,7 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
 
     private BI18n loadI18n() {
         BI18n i18n = new BI18n();
-        Locale defaultLocale = Locale.forLanguageTag(this.pluginConfiguration.getLocale());
-        if (defaultLocale == null) {
-            defaultLocale = Locale.ENGLISH;
-        }
-
-        i18n.setDefaultLocale(defaultLocale);
-
-        if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.PLAYER) {
-            i18n.registerLocaleProvider(new PlayerLocaleProvider(defaultLocale));
-        } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.FIXED) {
-            i18n.registerLocaleProvider(new FixedLocaleProvider(defaultLocale));
-        }
+        i18n.setDefaultLocale(this.getDefaultLocale());
 
         if (!this.langDirectory.exists()) {
             this.langDirectory.mkdir();
@@ -125,6 +121,16 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         }
 
         return i18n;
+    }
+
+    private void registerLocaleProviders(BI18n i18n) {
+        if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.PLAYER_CHOICE) {
+            i18n.registerLocaleProvider(this.injector.getInstance(PlayerChoiceLocaleProvider.class));
+        } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.PLAYER) {
+            i18n.registerLocaleProvider(this.injector.getInstance(PlayerLocaleProvider.class));
+        } else if (this.pluginConfiguration.getLocaleProvider() == LocaleProviderType.FIXED) {
+            i18n.registerLocaleProvider(this.injector.getInstance(FixedLocaleProvider.class));
+        }
     }
 
     private Storage loadStorage() {
@@ -171,10 +177,20 @@ public class CustomSkinsPlugin extends JavaPlugin implements Module {
         binder.bind(Logger.class).toInstance(this.getSLF4JLogger());
         binder.bind(PluginConfiguration.class).toInstance(this.loadPluginConfiguration());
         binder.bind(MessageConfiguration.class).toInstance(this.loadMessageConfiguration());
-        binder.bind(BI18n.class).toInstance(this.loadI18n());
         binder.bind(Storage.class).toInstance(this.loadStorage());
+        binder.bind(Locale.class).annotatedWith(Names.named("defaultLocale")).toInstance(this.getDefaultLocale());
+        binder.bind(BI18n.class).toInstance(loadI18n());
         binder.bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this));
         binder.bind(MineskinClient.class).toInstance(new MineskinClient("CustomSkins"));
+    }
+
+    public Locale getDefaultLocale() {
+        Locale defaultLocale = Locale.forLanguageTag(this.pluginConfiguration.getLocale());
+        if (defaultLocale == null) {
+            defaultLocale = Locale.ENGLISH;
+        }
+
+        return defaultLocale;
     }
 
     public Storage getSkinStorage() {

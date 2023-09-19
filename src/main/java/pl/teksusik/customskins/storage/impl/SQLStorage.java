@@ -19,8 +19,10 @@ public abstract class SQLStorage implements Storage {
 
     public void createTableIfNotExists() {
         try (final Connection connection = this.hikariDataSource.getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_skins (owner varchar(36) NOT NULL, name varchar(51) NOT NULL, texture longtext NOT NULL, signature longtext NOT NULL);")) {
-            preparedStatement.executeUpdate();
+             final PreparedStatement createSkinsTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_skins (owner varchar(36) NOT NULL, name varchar(51) NOT NULL, texture longtext NOT NULL, signature longtext NOT NULL);");
+             final PreparedStatement createI18nTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customskins_i18n (owner varchar(36) NOT NULL PRIMARY KEY, locale VARCHAR(10));")) {
+            createSkinsTable.executeUpdate();
+            createI18nTable.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -98,5 +100,39 @@ public abstract class SQLStorage implements Storage {
         }
 
         return 0;
+    }
+
+    @Override
+    public Optional<String> findLocale(UUID owner) {
+        try (Connection connection = this.hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT locale FROM customskins_i18n WHERE owner = ?")) {
+            preparedStatement.setString(1, owner.toString());
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String locale = resultSet.getString("locale");
+                    return Optional.of(locale);
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public String setLocale(UUID owner, String locale) {
+        try (Connection connection = this.hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO customskins_i18n VALUES (?, ?) ON CONFLICT (owner) DO UPDATE SET locale = ?")) {
+            preparedStatement.setString(1, owner.toString());
+            preparedStatement.setString(2, locale);
+            preparedStatement.setString(3, locale);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return locale;
     }
 }

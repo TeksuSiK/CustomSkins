@@ -13,7 +13,8 @@ public class MessageConfiguration extends LocaleConfig {
         "\n<green>- <reset>/skins list <gold>- <reset>Shows off skin list" +
         "\n<green>- <reset>/skins wear <name> <gold>- <reset>Dresses up skin from list" +
         "\n<green>- <reset>/skins add <name> <URL> <Model> <gold>- <reset>Creates skin from URL" +
-        "\n<green>- <reset>/skins delete <name> <gold>- <reset>Removes skin from list";
+        "\n<green>- <reset>/skins delete <name> <gold>- <reset>Removes skin from list" +
+        "\n<green>- <reset>/skins locale <locale> <gold>- <reset>Set locale to specified. Use without any argument to see available locales";
     @Comment("Skins available message")
     private String skinsAvailable = "<green>Skins available: <reset>{skins}";
     @Comment("Skin not exists message")
@@ -30,6 +31,12 @@ public class MessageConfiguration extends LocaleConfig {
     private String badUsage = "<dark_red>Error: <red>Incorrect usage. Check correct usage: <reset>/skins";
     @Comment("Upload skin message")
     private String skinUploaded = "<green>You successfully uploaded <reset>{skin} <green>skin";
+    @Comment("Available locales message")
+    private String availableLocales = "<yellow>Available locales: <reset>{locales}";
+    @Comment("Invalid locale message")
+    private String invalidLocale = "<dark_red>Error: <red>Locale <reset>{locale} does not exists. Available locales: <reset>{locales}";
+    @Comment("Set locale message")
+    private String localeChanged = "<green>You successfully changed your locale to <reset>{locale}";
 
     public String getHelpCommands() {
         return helpCommands;
@@ -65,5 +72,17 @@ public class MessageConfiguration extends LocaleConfig {
 
     public String getSkinUploaded() {
         return skinUploaded;
+    }
+
+    public String getAvailableLocales() {
+        return availableLocales;
+    }
+
+    public String getInvalidLocale() {
+        return invalidLocale;
+    }
+
+    public String getLocaleChanged() {
+        return localeChanged;
     }
 }

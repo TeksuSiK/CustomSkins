@@ -16,7 +16,6 @@ public class SkinService {
     @Inject
     private MineskinClient mineskinClient;
 
-
     public void setSkin(Player player, CustomSkin customSkin) {
         PlayerProfile profile = player.getPlayerProfile();
         ProfileProperty textures = new ProfileProperty("textures", customSkin.getTexture(), customSkin.getSignature());

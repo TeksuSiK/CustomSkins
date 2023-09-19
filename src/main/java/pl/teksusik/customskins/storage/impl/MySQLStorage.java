@@ -2,7 +2,10 @@ package pl.teksusik.customskins.storage.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class MySQLStorage extends SQLStorage {
     public MySQLStorage(String host, int port, String database, String username, String password) {
@@ -34,5 +37,17 @@ public class MySQLStorage extends SQLStorage {
         }
 
         this.createTableIfNotExists();
+    }
+
+    @Override
+    public String setLocale(UUID owner, String locale) {
+        try (Connection connection = this.hikariDataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO customskins_i18n VALUES (?, ?) ON DUPLICATE KEY UPDATE locale = ?")) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return locale;
     }
 }
