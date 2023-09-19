@@ -14,6 +14,7 @@ public class MessageConfiguration extends LocaleConfig {
         "\n<green>- <reset>/skins wear <name> <gold>- <reset>Dresses up skin from list" +
         "\n<green>- <reset>/skins add <name> <URL> <Model> <gold>- <reset>Creates skin from URL" +
         "\n<green>- <reset>/skins delete <name> <gold>- <reset>Removes skin from list" +
+        "\n<green>- <reset>/skins clear <gold>- <reset>Clears skin to player default" +
         "\n<green>- <reset>/skins locale <locale> <gold>- <reset>Set locale to specified. Use without any argument to see available locales";
     @Comment("Skins available message")
     private String skinsAvailable = "<green>Skins available: <reset>{skins}";
