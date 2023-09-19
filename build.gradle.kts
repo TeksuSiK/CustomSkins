@@ -90,7 +90,7 @@ tasks.named<ShadowJar>("shadowJar") {
 
 tasks {
     runServer {
-        minecraftVersion("1.19.3")
+        minecraftVersion("1.20.1")
     }
 }
 
